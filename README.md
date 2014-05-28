@@ -16,8 +16,8 @@ installation
 usage
 -----
 
-```python main.py```
-```python tests.py```
+* ```python tests.py```
+* ```python main.py```
 
 
 game api aka how to build bots
