@@ -17,7 +17,7 @@ usage
 -----
 
 * ```python tests.py```
-* ```python main.py```
+* ```python main.py move_down move_left move_up move_right```
 
 
 game api aka how to build bots

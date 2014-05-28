@@ -1,13 +1,16 @@
 import pygame
 
 import consts
-from units import Unit
+import bots
+from players import Player
 
 
 class Game(object):
-    def __init__(self):
+    def __init__(self, *args):
+        self.args = args
         self.init_screen()
-        self.init_units()
+        self.init_functions()
+        self.init_players()
 
     def init_screen(self):
         self.screen = pygame.display.get_surface()
@@ -16,8 +19,20 @@ class Game(object):
         self.fps = 60.0
         self.done = False
 
-    def init_units(self):
-        self.units = [Unit(0, 0) for _ in xrange(0, 20)]
+    def init_players(self):
+        self.players = [
+            Player(pk=i, action_func=function)
+            for i, function in enumerate(self.functions)
+        ]
+
+    def init_functions(self):
+        for arg in self.args:
+            __import__('bots.{}'.format(arg))
+        self.functions = [getattr(bots, arg).action for arg in self.args]
+
+    @property
+    def units(self):
+        return [unit for player in self.players for unit in player.units]
 
     def event_loop(self):
         for event in pygame.event.get():
@@ -26,10 +41,8 @@ class Game(object):
                 self.done = True
 
     def update(self):
-        from random import randint
-        x, y = consts.GRID_SIZE
-        for unit in self.units:
-            unit.move(randint(0, x), randint(0, y))
+        for player in self.players:
+            player.action()
 
     def draw(self):
         self.screen.fill((0, 0, 0))
