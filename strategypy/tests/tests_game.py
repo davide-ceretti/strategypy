@@ -28,6 +28,3 @@ class TestGameDrawGrid(unittest.TestCase):
             call(None, consts.GRID_COLOR, (0, 4), (6, 4), 1),
         ]
         self.assertListEqual(calls, pg.draw.line.call_args_list)
-
-if __name__ == '__main__':
-    unittest.main()
