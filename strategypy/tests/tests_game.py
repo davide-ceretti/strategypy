@@ -68,11 +68,21 @@ class TestInitFunctions(unittest.TestCase):
         self.assertListEqual(self.game.functions, [])
 
     def test_multiple_args(self):
-        # TODO: Move test modules in a test package
         self.game.args = ['test_one', 'test_two']
         self.game.init_functions()
         from bots.test_one import action as action_one
         from bots.test_two import action as action_two
+        self.assertListEqual(
+            self.game.functions,
+            [action_one, action_two]
+        )
+
+    @unittest.skip('TODO')
+    def test_multiple_args_in_package(self):
+        self.game.args = ['tests.test_one', 'tests.test_two']
+        self.game.init_functions()
+        from bots.tests.test_one import action as action_one
+        from bots.tests.test_two import action as action_two
         self.assertListEqual(
             self.game.functions,
             [action_one, action_two]

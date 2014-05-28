@@ -28,7 +28,10 @@ class Game(object):
     def init_functions(self):
         for arg in self.args:
             __import__('bots.{}'.format(arg))
-        self.functions = [getattr(bots, arg).action for arg in self.args]
+        self.functions = [self._get_action(arg) for arg in self.args]
+
+    def _get_action(self, module_path):
+        return getattr(bots, module_path).action
 
     @property
     def units(self):
