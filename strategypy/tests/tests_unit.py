@@ -1,10 +1,10 @@
 from mock import patch
 import unittest
 
-from players import Unit
+from core.players import Unit
 
 
-@patch('game.consts.GRID_SIZE', (3, 4))
+@patch('core.game.settings.GRID_SIZE', (3, 4))
 class TestUnitMove(unittest.TestCase):
     """
     The grid should look like this

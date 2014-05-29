@@ -1,8 +1,8 @@
 import pygame
 
-import consts
+import settings
 import bots
-from players import Player
+from core.players import Player
 
 
 class Game(object):
@@ -27,7 +27,7 @@ class Game(object):
         Create Players according to the loaded functions
         """
         self.players = [
-            Player(pk=i, action_func=function)
+            Player(pk=i, action_func=function, game=self)
             for i, function in enumerate(self.functions)
         ]
 
@@ -65,7 +65,7 @@ class Game(object):
 
     def update(self):
         """
-        Action all the units in the Game
+        Fetch all unit positions and action them
         """
         for player in self.players:
             player.action()
@@ -74,7 +74,7 @@ class Game(object):
         """
         Main drawing function called in the infinite loop
         """
-        self.screen.fill(consts.BG_COLOR)
+        self.screen.fill(settings.BG_COLOR)
         for unit in self.units:
             unit.render()
         self.draw_grid()
@@ -83,12 +83,12 @@ class Game(object):
         """
         Draw a grid according to the game settings
         """
-        X, Y = consts.SCREEN_SIZE
-        gap_x, gap_y = consts.UNIT_SIZE
+        X, Y = settings.SCREEN_SIZE
+        gap_x, gap_y = settings.UNIT_SIZE
         for i in xrange(0, X+1, gap_x):
             pygame.draw.line(
                 self.screen,
-                consts.GRID_COLOR,
+                settings.GRID_COLOR,
                 (i, 0),
                 (i, Y),
                 1,
@@ -96,7 +96,7 @@ class Game(object):
         for i in xrange(0, Y+1, gap_y):
             pygame.draw.line(
                 self.screen,
-                consts.GRID_COLOR,
+                settings.GRID_COLOR,
                 (0, i),
                 (X, i),
                 1,
@@ -107,7 +107,7 @@ class Game(object):
         Show the program's FPS in the window handle
         """
         fps = self.clock.get_fps()
-        caption = "{} - FPS: {:.2f}".format(consts.CAPTION, fps)
+        caption = "{} - FPS: {:.2f}".format(settings.CAPTION, fps)
         pygame.display.set_caption(caption)
 
     def main_loop(self):

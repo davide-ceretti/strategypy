@@ -2,8 +2,8 @@ import os
 import sys
 import pygame
 
-from game import Game
-from consts import SCREEN_SIZE
+from core.game import Game
+from settings import SCREEN_SIZE
 
 if __name__ == "__main__":
     os.environ['SDL_VIDEO_CENTERED'] = '1'
