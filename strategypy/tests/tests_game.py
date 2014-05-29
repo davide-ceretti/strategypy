@@ -1,5 +1,5 @@
 import unittest
-from mock import patch, call
+from mock import patch, call, Mock
 
 from game import Game
 from players import Player
@@ -29,6 +29,33 @@ class TestGameDrawGrid(unittest.TestCase):
             call(None, consts.GRID_COLOR, (0, 4), (6, 4), 1),
         ]
         self.assertListEqual(calls, pg.draw.line.call_args_list)
+
+
+class TestGameDraw(unittest.TestCase):
+    def setUp(self):
+        Game.__init__ = lambda x: None
+        Game.units = []  # We override the property
+        self.game = Game()
+        self.game.screen = Mock()
+        self.game.draw_grid = Mock()
+
+    def test_game_draw_no_units(self):
+        self.game.units = []
+
+        self.game.draw()
+
+        self.assertEqual(self.game.draw_grid.call_count, 1)
+        self.game.screen.fill.assert_called_once_with(consts.BG_COLOR)
+
+    def test_game_draw_multiple_units(self):
+        self.game.units = [Mock(), Mock(), Mock()]
+
+        self.game.draw()
+
+        self.assertEqual(self.game.draw_grid.call_count, 1)
+        self.game.screen.fill.assert_called_once_with(consts.BG_COLOR)
+        for unit in self.game.units:
+            self.assertEqual(unit.render.call_count, 1)
 
 
 class TestInitPlayers(unittest.TestCase):
