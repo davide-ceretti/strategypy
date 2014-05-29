@@ -8,10 +8,17 @@ from core.players import Player
 class Game(object):
     def __init__(self, *args):
         self.args = args
+        self.occupied_cells = []
         self.init_screen()
         self.init_functions()
         self.init_players()
         self.done = False
+
+    def set_occupied_cells(self):
+        """
+        Update the list of the cells currently occupied by units
+        """
+        self.occupied_cells = [(unit.x, unit.y) for unit in self.units]
 
     def init_screen(self):
         """
@@ -20,7 +27,7 @@ class Game(object):
         self.screen = pygame.display.get_surface()
         self.screen_rect = self.screen.get_rect()
         self.clock = pygame.time.Clock()
-        self.fps = 60.0
+        self.fps = settings.FPS
 
     def init_players(self):
         """
@@ -65,8 +72,9 @@ class Game(object):
 
     def update(self):
         """
-        Fetch all unit positions and action them
+        Fetch all unit positions and action units
         """
+        self.set_occupied_cells()
         for player in self.players:
             player.action()
 

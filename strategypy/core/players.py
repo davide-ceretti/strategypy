@@ -10,10 +10,10 @@ class Player(object):
     """
     def __init__(self, pk, action_func, game):
         self.pk = pk
+        self.game = game
         self.units = [Unit(self) for _ in xrange(settings.UNITS)]
         self.color = self.set_color()
         self.action_func = action_func
-        self.game = game
 
     def action(self):
         """
@@ -42,8 +42,10 @@ class Unit(object):
     on the game grid by a small coloured square.
     """
     def __init__(self, player):
-        self.spawn_random()
+        self.x = 0
+        self.y = 0
         self.player = player
+        self.spawn_random()
 
     def render(self):
         """
@@ -90,18 +92,30 @@ class Unit(object):
         }
 
         movement = possible_movements.get(direction, None)
-        if movement is None or not movement['condition']:
+        if movement is None:
             return
-        self.x += movement['dx']
-        self.y += movement['dy']
+        inside = movement['condition']
+        x = self.x + movement['dx']
+        y = self.y + movement['dy']
+        free = (x, y) not in self.player.game.occupied_cells
+        if inside and free:
+            self.x = x
+            self.y = y
 
     def spawn_random(self):
         """
         Move the Unit to a random position on the grid
         """
+        # TODO: Optimize
         x, y = settings.GRID_SIZE
-        self.x = random.randint(0, x)
-        self.y = random.randint(0, y)
+        retry = True
+        while retry:
+            x_candidate = random.randint(0, x)
+            y_candidate = random.randint(0, y)
+            if (self.x, self.y) not in self.player.game.occupied_cells:
+                self.x = x_candidate
+                self.y = y_candidate
+                retry = False
 
     @property
     def current_cell(self):

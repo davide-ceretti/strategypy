@@ -62,6 +62,7 @@ class TestInitPlayers(unittest.TestCase):
     def setUp(self):
         Game.__init__ = lambda x: None
         self.game = Game()
+        self.game.occupied_cells = []
 
     def test_no_function(self):
         self.game.functions = []
