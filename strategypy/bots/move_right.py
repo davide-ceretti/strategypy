@@ -1,2 +1,2 @@
 def action(unit):
-    unit.move_right()
+    unit.move('right')

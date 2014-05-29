@@ -53,31 +53,46 @@ class Unit(object):
             surface, self.player.color, consts.cell(self.x, self.y)
         )
 
-    def move(self, x, y):
+    def move(self, direction):
         """
-        Move the Unit to row x, column y
+        Move the unit up, down, left or right
         """
-        self.x, self.y = x, y
+        up = {
+            'condition': self.y > 0,
+            'dx': 0,
+            'dy': -1,
+        }
 
-    def move_up(self):
-        allowed = self.y > 0
-        if allowed:
-            self.y -= 1
+        down = {
+            'condition': self.y < consts.GRID_SIZE[1] - 1,
+            'dx': 0,
+            'dy': 1,
+        }
 
-    def move_down(self):
-        allowed = self.y < consts.GRID_SIZE[1] - 1
-        if allowed:
-            self.y += 1
+        left = {
+            'condition': self.x > 0,
+            'dx': -1,
+            'dy': 0,
+        }
 
-    def move_left(self):
-        allowed = self.x > 0
-        if allowed:
-            self.x -= 1
+        right = {
+            'condition': self.x < consts.GRID_SIZE[0] - 1,
+            'dx': 1,
+            'dy': 0,
+        }
 
-    def move_right(self):
-        allowed = self.x < consts.GRID_SIZE[0] - 1
-        if allowed:
-            self.x += 1
+        possible_movements = {
+            'left': left,
+            'right': right,
+            'up': up,
+            'down': down,
+        }
+
+        movement = possible_movements.get(direction, None)
+        if movement is None or not movement['condition']:
+            return
+        self.x += movement['dx']
+        self.y += movement['dy']
 
     def spawn_random(self):
         """
@@ -86,3 +101,7 @@ class Unit(object):
         x, y = consts.GRID_SIZE
         self.x = random.randint(0, x)
         self.y = random.randint(0, y)
+
+    @property
+    def current_cell(self):
+        return (self.x, self.y)

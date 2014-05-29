@@ -1,2 +1,2 @@
 def action(unit):
-    unit.move_up()
+    unit.move('up')
