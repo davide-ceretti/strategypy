@@ -1,9 +1,9 @@
-WIP project
+![Alt text](https://api.travis-ci.org/davide-ceretti/strategypy.svg?branch=master)
 
 strategypy
 ----------
 
-The idea is to provide a framework so that people can implement their own bot for a simple strategy game and compete versus each other.
+The idea is to provide a framework so that people can implement their own bot for a simple strategy game and compete versus each other. The project is currently in development (no alpha yet).
 
 
 installation
