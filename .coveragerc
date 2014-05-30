@@ -1,0 +1,2 @@
+[report]
+omit = *tests*,*bots*,*site-packages*,*settings*

@@ -1,1 +1,1 @@
-python strategypy/tests.py
+coverage run strategypy/tests.py
