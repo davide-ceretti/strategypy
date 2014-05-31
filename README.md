@@ -1,5 +1,5 @@
 [![Alt text](https://api.travis-ci.org/davide-ceretti/strategypy.svg?branch=master)](https://travis-ci.org/davide-ceretti/strategypy)
-[![Alt text](https://coveralls.io/repos/davide-ceretti/strategypy/badge.png?branch=master)](https://coveralls.io/r/davide-ceretti/strategypy)
+[![Alt text](http://coveralls.io/repos/davide-ceretti/strategypy/badge.png?branch=master)](https://coveralls.io/r/davide-ceretti/strategypy)
 
 strategypy
 ----------
@@ -8,15 +8,13 @@ The idea is to provide a framework so that people can implement their own bot fo
 
 Most of the code not covered by unittests is pygame calls.
 
-
-installation
+Installation
 ------------
 
 * ```sudo apt-get install mercurial libfreetype6-dev python-dev python-numpy ffmpeg libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsmpeg-dev libsdl1.2-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev```
 * ```pip install -r requirements.txt```
 
-
-usage
+Usage
 -----
 
 * ```source scripts/run_tests```
