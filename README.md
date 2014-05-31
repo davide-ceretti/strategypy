@@ -1,10 +1,12 @@
 [![Alt text](https://api.travis-ci.org/davide-ceretti/strategypy.svg?branch=master)](https://travis-ci.org/davide-ceretti/strategypy)
 [![Alt text](https://coveralls.io/repos/davide-ceretti/strategypy/badge.png?branch=master)](https://coveralls.io/r/davide-ceretti/strategypy)
-    
+
 strategypy
 ----------
 
 The idea is to provide a framework so that people can implement their own bot for a simple strategy game and compete versus each other. The project is currently in development (no alpha yet).
+
+Most of the code not covered by unittests is pygame calls.
 
 
 installation
@@ -22,7 +24,7 @@ usage
 
 General usage is ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
 
-game api aka how to build bots
-------------------------------
+API for bots
+------------
 
-todo
+TBD. Meanwhile have a look at strategypy/bots

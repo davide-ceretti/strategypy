@@ -1,2 +1,0 @@
-def action(unit):
-    pass

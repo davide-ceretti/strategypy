@@ -1,2 +1,6 @@
-def action(unit):
-    pass
+from api import BaseBot
+
+
+class Bot(BaseBot):
+    def action(self):
+        return 'move up'

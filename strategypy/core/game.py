@@ -10,7 +10,7 @@ class Game(object):
         self.args = args
         self.occupied_cells = []
         self.init_screen()
-        self.init_functions()
+        self.init_bots()
         self.init_players()
         self.done = False
 
@@ -18,6 +18,7 @@ class Game(object):
         """
         Update the list of the cells currently occupied by units
         """
+        # TODO: Optimize by adding add update_occupied_cells instead
         self.occupied_cells = [(unit.x, unit.y) for unit in self.units]
 
     def init_screen(self):
@@ -31,28 +32,24 @@ class Game(object):
 
     def init_players(self):
         """
-        Create Players according to the loaded functions
+        Create Players and load their personal bot
         """
-        self.players = [
-            Player(pk=i, action_func=function, game=self)
-            for i, function in enumerate(self.functions)
-        ]
+        # I can't initialize players with a list comprehension because
+        # Player __init__ need to access Game.players attribute
+        # TODO: Code smell?
+        self.players = []
+        for i, bot_class in enumerate(self.bots):
+            player = Player(pk=i, bot_class=bot_class, game=self)
+            self.players.append(player)
 
-    def init_functions(self):
+    def init_bots(self):
         """
         Create bot action functions by getting the name of the
         package/module from the args
         """
         for arg in self.args:
             __import__('bots.{}'.format(arg))
-        self.functions = [self._get_action(arg) for arg in self.args]
-
-    def _get_action(self, module_path):
-        """
-        Take the name of the module (i.e. tests.test_one or test_one)
-        and returns the action function as defined in the module
-        """
-        return getattr(bots, module_path).action
+        self.bots = [getattr(bots, arg).Bot for arg in self.args]
 
     @property
     def units(self):
@@ -74,9 +71,10 @@ class Game(object):
         """
         Fetch all unit positions and action units
         """
-        self.set_occupied_cells()
         for player in self.players:
-            player.action()
+            for unit in player.units:
+                unit.action()
+                self.set_occupied_cells()
 
     def draw(self):
         """

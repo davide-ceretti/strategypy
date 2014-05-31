@@ -1,2 +1,6 @@
-def action(unit):
-    unit.move('right')
+from api import BaseBot
+
+
+class Bot(BaseBot):
+    def action(self):
+        return 'move right'

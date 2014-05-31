@@ -6,21 +6,14 @@ import settings
 
 class Player(object):
     """
-    It represents a player in the game
+    A player in the game.
     """
-    def __init__(self, pk, action_func, game):
+    def __init__(self, pk, bot_class, game):
         self.pk = pk
         self.game = game
+        self.bot_class = bot_class
         self.units = [Unit(self) for _ in xrange(settings.UNITS)]
         self.color = self.set_color()
-        self.action_func = action_func
-
-    def action(self):
-        """
-        Execute the dynamic action functions for all its units
-        """
-        for unit in self.units:
-            self.action_func(unit)
 
     def set_color(self):  # TODO: Make it a proper setter
         """
@@ -46,6 +39,13 @@ class Unit(object):
         self.y = 0
         self.player = player
         self.spawn_random()
+        self.bot = player.bot_class(self)
+
+    def action(self):
+        """
+        Call the action method defined in the bot
+        """
+        self.bot.__process_action__()
 
     def render(self):
         """
@@ -116,6 +116,7 @@ class Unit(object):
                 self.x = x_candidate
                 self.y = y_candidate
                 retry = False
+        self.player.game.set_occupied_cells()
 
     @property
     def current_cell(self):

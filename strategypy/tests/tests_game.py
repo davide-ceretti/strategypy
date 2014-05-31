@@ -3,6 +3,7 @@ from mock import patch, call, Mock
 
 from core.game import Game
 from core.players import Player
+from api import BaseBot
 import settings
 
 
@@ -64,54 +65,43 @@ class TestInitPlayers(unittest.TestCase):
         self.game = Game()
         self.game.occupied_cells = []
 
-    def test_no_function(self):
-        self.game.functions = []
+    def test_no_bots(self):
+        self.game.bots = []
         self.game.init_players()
         self.assertListEqual(self.game.players, [])
 
-    def test_multiple_functions(self):
-        first_function = lambda: 1
-        second_function = lambda: 2
-        self.game.functions = [first_function, second_function]
+    def test_multiple_bots(self):
+        class BotOne(BaseBot):
+            pass
+
+        class BotTwo(BaseBot):
+            pass
+
+        self.game.bots = [BotOne, BotTwo]
 
         self.game.init_players()
 
         first_player, second_player = self.game.players
         self.assertEqual(first_player.pk, 0)
-        self.assertEqual(first_player.action_func, first_function)
+        self.assertEqual(first_player.bot_class, BotOne)
         self.assertIsInstance(first_player, Player)
         self.assertEqual(second_player.pk, 1)
-        self.assertEqual(second_player.action_func, second_function)
+        self.assertEqual(second_player.bot_class, BotTwo)
         self.assertIsInstance(second_player, Player)
 
 
-class TestInitFunctions(unittest.TestCase):
+class TestInitBots(unittest.TestCase):
     def setUp(self):
         Game.__init__ = lambda x: None
         self.game = Game()
 
     def test_no_args(self):
         self.game.args = []
-        self.game.init_functions()
-        self.assertListEqual(self.game.functions, [])
+        self.game.init_bots()
+        self.assertListEqual(self.game.bots, [])
 
-    def test_multiple_args(self):
-        self.game.args = ['test_one', 'test_two']
-        self.game.init_functions()
-        from bots.test_one import action as action_one
-        from bots.test_two import action as action_two
-        self.assertListEqual(
-            self.game.functions,
-            [action_one, action_two]
-        )
-
-    @unittest.skip('TODO')
-    def test_multiple_args_in_package(self):
-        self.game.args = ['tests.test_one', 'tests.test_two']
-        self.game.init_functions()
-        from bots.tests.test_one import action as action_one
-        from bots.tests.test_two import action as action_two
-        self.assertListEqual(
-            self.game.functions,
-            [action_one, action_two]
-        )
+    def test_one_bot(self):
+        self.game.args = ['test_one']
+        self.game.init_bots()
+        from bots.test_one import Bot
+        self.assertListEqual(self.game.bots, [Bot])
