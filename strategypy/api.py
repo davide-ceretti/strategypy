@@ -13,6 +13,7 @@ class BaseBot(object):
             'move right',
             'move down',
         ]
+        self.__previous_position__ = self.position
 
     def action(self):
         """
@@ -22,15 +23,32 @@ class BaseBot(object):
         """
         raise NotImplementedError
 
+    @property
+    def position(self):
+        """
+        The position of the unit in the grid
+        """
+        return self.__unit__.current_cell
+
+    @property
+    def previous_position(self):
+        """
+        The position of the unit before the last action.
+        """
+        return self.__previous_position__
+
     def __process_action__(self):
         """
         Interpret the message returned by action and execute it
         """
+        pos = self.position
         action = self.action()
         if action not in self.__allowed_actions__:
-            msg = 'Bot#%s executing not allowed action: %s' % (
-                self.__unit__.player.pk, action)
-            logging.warning(msg)
+            if action is not None:
+                msg = 'Bot#%s executing not allowed action: %s' % (
+                    self.__unit__.player.pk, action)
+                logging.warning(msg)
             return
         verb, arg = action.split(' ')
         self.__unit__.move(arg)
+        self.__previous_position__ = pos
