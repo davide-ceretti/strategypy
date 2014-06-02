@@ -1,3 +1,6 @@
+"""
+Bot used in unittests
+"""
 from api import BaseBot
 
 

@@ -13,20 +13,23 @@ class Player(object):
         self.game = game
         self.bot_class = bot_class
         self.units = [Unit(self) for _ in xrange(settings.UNITS)]
-        self.color = self.set_color()
+        self.set_color_and_name()
 
-    def set_color(self):  # TODO: Make it a proper setter
+    def set_color_and_name(self):
         """
-        Assign a color to the player
+        Assign a color and a name to the player
         """
-        grey = pygame.Color(100, 100, 100)
-        colors = {
-            0: pygame.Color(255, 0, 0),
-            1: pygame.Color(0, 255, 0),
-            2: pygame.Color(0, 0, 255),
-            3: pygame.Color(175, 175, 0),
-        }
-        return colors.get(self.pk, grey)
+        name, color = settings.COLORS.get(self.pk, settings.DEFAULT_COLOR_NAME)
+        self.color = color
+        self.name = name
+
+    def get_bot_class_module_name(self):
+        """
+        Returns the name of the module we imported
+        bot_class from
+        """
+        _, module_name = self.bot_class.__module__.split('.')
+        return module_name
 
 
 class Unit(object):

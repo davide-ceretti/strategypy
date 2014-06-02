@@ -2,7 +2,7 @@ import unittest
 from mock import patch, call, Mock
 
 from core.game import Game
-from core.players import Player
+from core.players import Player, Unit
 from api import BaseBot
 import settings
 
@@ -105,3 +105,56 @@ class TestInitBots(unittest.TestCase):
         self.game.init_bots()
         from bots.test_one import Bot
         self.assertListEqual(self.game.bots, [Bot])
+
+
+class TestCheckForVictory(unittest.TestCase):
+    def setUp(self):
+        Game.__init__ = lambda x: None
+        self.game = Game()
+
+    def test_game_already_finished(self):
+        player = Mock(spec=Player)
+        self.game.victorious_player = player
+
+        self.game.check_for_victory()
+
+        self.assertEqual(self.game.victorious_player, player)
+
+    def test_no_winners(self):
+        player_one = Mock(spec=Player)
+        player_one.units = [
+            Mock(spec=Unit, current_cell=(1, 3)),
+            Mock(spec=Unit, current_cell=(2, 4)),
+        ]
+        self.game.victorious_player = None
+        self.game.players = [player_one]
+
+        self.game.check_for_victory()
+
+        self.assertIsNone(self.game.victorious_player)
+
+    def test_winner_horizontal(self):
+        player_one = Mock(spec=Player)
+        player_one.units = [
+            Mock(spec=Unit, current_cell=(1, 3)),
+            Mock(spec=Unit, current_cell=(2, 3)),
+        ]
+        self.game.victorious_player = None
+        self.game.players = [player_one]
+
+        self.game.check_for_victory()
+
+        self.assertEqual(self.game.victorious_player, player_one)
+
+    def test_winner_vertical(self):
+        player_one = Mock(spec=Player)
+        player_one.units = [
+            Mock(spec=Unit, current_cell=(1, 3)),
+            Mock(spec=Unit, current_cell=(1, 2)),
+        ]
+        self.game.victorious_player = None
+        self.game.players = [player_one]
+
+        self.game.check_for_victory()
+
+        self.assertEqual(self.game.victorious_player, player_one)

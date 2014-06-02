@@ -13,6 +13,7 @@ class Game(object):
         self.init_bots()
         self.init_players()
         self.done = False
+        self.victorious_player = None
 
     def set_occupied_cells(self):
         """
@@ -108,13 +109,45 @@ class Game(object):
                 1,
             )
 
-    def display_fps(self):
+    def display_caption(self):
         """
         Show the program's FPS in the window handle
+        and the winner if there is one
         """
         fps = self.clock.get_fps()
-        caption = "{} - FPS: {:.2f}".format(settings.CAPTION, fps)
+        winner_info = '- WINNER: {} ({})'.format(
+            self.victorious_player.name,
+            self.victorious_player.get_bot_class_module_name()) \
+            if self.victorious_player else ''
+        caption = "{} - FPS: {:.2f} {}".format(
+            settings.CAPTION, fps, winner_info)
         pygame.display.set_caption(caption)
+
+    def check_for_victory(self):
+        """
+        Determine whether the game has ended or not and
+        set the victorious_player attribute accordingly.
+        Condition of victory: all the units should be aligned
+        either vertically or horizontaly
+        """
+        if self.victorious_player:
+            return
+
+        for player in self.players:
+            positions = [unit.current_cell for unit in player.units]
+            xs = set(x for x, y in positions)
+            ys = set(y for x, y in positions)
+            if len(xs) == 1 or len(ys) == 1:
+                # We have a winner :)
+                self.victorious_player = player
+                self.update_caption_with_victorious_player()
+
+    def update_caption_with_victorious_player(self):
+        """
+        Update the window caption with the victorious
+        player information
+        """
+        assert self.victorious_player
 
     def main_loop(self):
         """
@@ -126,4 +159,5 @@ class Game(object):
             self.draw()
             pygame.display.update()
             self.clock.tick(self.fps)
-            self.display_fps()
+            self.check_for_victory()
+            self.display_caption()
