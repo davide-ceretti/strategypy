@@ -1,1 +1,1 @@
-python strategypy/main.py move_up_or_random move_left move_down move_right
+python strategypy/main.py move_random move_left move_down move_right move_up

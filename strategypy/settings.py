@@ -5,7 +5,7 @@ import pygame
 
 # Screen & grid
 CAPTION = "StrategyPY"
-FPS = 10
+FPS = 25
 BG_COLOR = (0, 0, 0)
 SCREEN_SIZE = (800, 600)
 UNIT_SIZE = (10, 10)
@@ -27,7 +27,7 @@ COLORS = {
 }
 
 # Gameplay
-UNITS = 50
+UNITS = 40
 
 try:
     from local_settings import *

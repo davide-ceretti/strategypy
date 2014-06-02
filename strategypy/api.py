@@ -1,5 +1,6 @@
 import logging
 
+import settings
 
 class BaseBot(object):
     """
@@ -52,3 +53,10 @@ class BaseBot(object):
         verb, arg = action.split(' ')
         self.__unit__.move(arg)
         self.__previous_position__ = pos
+
+    @property
+    def grid_size(self):
+        """
+        Return the size of the grid (X, Y)
+        """
+        return settings.GRID_SIZE

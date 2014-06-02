@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from mock import Mock, patch
 
 from api import BaseBot
 from core.players import Unit
@@ -53,3 +53,8 @@ class TestBaseBot(unittest.TestCase):
     def test_previous_position(self):
         self.base_bot.__previous_position__ = (3, 5)
         self.assertTupleEqual(self.base_bot.previous_position, (3, 5))
+
+    @patch('api.settings.GRID_SIZE', (13, 37))
+    def test_grid_size(self):
+        grid_size = self.base_bot.grid_size
+        self.assertEqual(grid_size, (13, 37))
