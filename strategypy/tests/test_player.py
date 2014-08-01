@@ -14,15 +14,15 @@ COLORS = {
     5: ('fucsia', pygame.Color(255, 0, 255)),
 }
 
+# TODO: Stop patching __init__, fuck isolation
+
 
 @patch('core.game.settings.COLORS', COLORS)
 @patch('core.game.settings.DEFAULT_COLOR_NAME', DEFAULT_COLOR_NAME)
+@patch.object(Player, "__init__", side_effect=lambda *args: None)
 class TestPlayerSetColorAndName(unittest.TestCase):
-    def setUp(self):
-        Player.__init__ = lambda *args: None
+    def test_color_in_colors(self, init):
         self.player = Player()
-
-    def test_color_in_colors(self):
         self.player.pk = 2
 
         self.player.set_color_and_name()
@@ -30,7 +30,8 @@ class TestPlayerSetColorAndName(unittest.TestCase):
         self.assertEqual(self.player.name, 'blue')
         self.assertEqual(self.player.color, pygame.Color(0, 0, 255))
 
-    def test_color_not_in_colors(self):
+    def test_color_not_in_colors(self, init):
+        self.player = Player()
         self.player.pk = 6
 
         self.player.set_color_and_name()
@@ -39,13 +40,11 @@ class TestPlayerSetColorAndName(unittest.TestCase):
         self.assertEqual(self.player.color, pygame.Color(100, 100, 100))
 
 
+@patch.object(Player, "__init__", side_effect=lambda *args: None)
 class TestPlayerGetBotClassModuleName(unittest.TestCase):
-    def setUp(self):
-        Player.__init__ = lambda *args: None
-        self.player = Player()
-
-    def test_imported_bot(self):
+    def test_imported_bot(self, init):
         from bots.test_one import Bot
+        self.player = Player()
         self.player.bot_class = Bot
 
         module_name = self.player.get_bot_class_module_name()

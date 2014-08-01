@@ -42,7 +42,7 @@ class Game(object):
         # TODO: Code smell?
         self.players = []
         for i, bot_class in enumerate(self.bots):
-            player = Player(pk=i, bot_class=bot_class, game=self)
+            player = Player(i, bot_class, self)
             self.players.append(player)
 
     def init_bots(self):
