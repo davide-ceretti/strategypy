@@ -1,3 +1,5 @@
+from random import shuffle
+
 import pygame
 
 import settings
@@ -72,10 +74,11 @@ class Game(object):
         """
         Fetch all unit positions and action units
         """
-        for player in self.players:
-            for unit in player.units:
-                unit.action()
-                self.set_occupied_cells()
+        units = [unit for player in self.players for unit in player.units]
+        shuffle(units)
+        for unit in units:
+            unit.action()
+            self.set_occupied_cells()
 
     def draw(self):
         """
