@@ -63,7 +63,7 @@ class TestInitPlayers(unittest.TestCase):
     def setUp(self):
         Game.__init__ = lambda x: None
         self.game = Game()
-        self.game.occupied_cells = []
+        self.game.occupied_cells = set()
 
     def test_no_bots(self):
         self.game.bots = []

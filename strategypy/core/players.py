@@ -109,17 +109,14 @@ class Unit(object):
         """
         Move the Unit to a random position on the grid
         """
-        # TODO: Optimize
-        x, y = settings.GRID_SIZE
-        retry = True
-        while retry:
-            x_candidate = random.randint(0, x)
-            y_candidate = random.randint(0, y)
-            if (self.x, self.y) not in self.player.game.occupied_cells:
-                self.x = x_candidate
-                self.y = y_candidate
-                retry = False
-        self.player.game.set_occupied_cells()
+        X, Y = settings.GRID_SIZE
+        all_cells = {(x, y) for x in xrange(0, X) for y in xrange(0, Y)}
+        occupied_cells = self.player.game.occupied_cells
+        open_cells = all_cells - occupied_cells
+        self.x, self.y = random.sample(open_cells, 1)[0]
+        # FIXME: As we are still creating players at this point we have
+        # To update occupied_cells manually
+        occupied_cells.add((self.x, self.y))
 
     @property
     def current_cell(self):

@@ -10,19 +10,19 @@ from core.players import Player
 class Game(object):
     def __init__(self, *args):
         self.args = args
-        self.occupied_cells = []
+        self.occupied_cells = set()
         self.init_screen()
         self.init_bots()
         self.init_players()
         self.done = False
         self.victorious_player = None
 
-    def set_occupied_cells(self):
+    def auto_update_occupied_cells(self):
         """
         Update the list of the cells currently occupied by units
         """
         # TODO: Optimize by adding add update_occupied_cells instead
-        self.occupied_cells = [(unit.x, unit.y) for unit in self.units]
+        self.occupied_cells = {(unit.x, unit.y) for unit in self.units}
 
     def init_screen(self):
         """
@@ -78,7 +78,7 @@ class Game(object):
         shuffle(units)
         for unit in units:
             unit.action()
-            self.set_occupied_cells()
+            self.auto_update_occupied_cells()
 
     def draw(self):
         """
@@ -143,14 +143,6 @@ class Game(object):
             if len(xs) == 1 or len(ys) == 1:
                 # We have a winner :)
                 self.victorious_player = player
-                self.update_caption_with_victorious_player()
-
-    def update_caption_with_victorious_player(self):
-        """
-        Update the window caption with the victorious
-        player information
-        """
-        assert self.victorious_player
 
     def main_loop(self):
         """
