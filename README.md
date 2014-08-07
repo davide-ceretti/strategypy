@@ -22,7 +22,13 @@ Usage
 
 General usage is ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
 
-API for bots
-------------
+TODO / Improvements
+-------------------
 
-TBD. Meanwhile have a look at strategypy/bots
+* API for Bots
+* Security (Disable os, HTTP etc..)
+* Anti-cheating (Isolate bots from what is not exposed by the API)
+* Drop pygame for a JS FE (Game still played in Python)
+* Numpy / Performance improvements
+* Performance tracking
+* Rework game rules and engine to make it more interesting
