@@ -2,6 +2,7 @@ import logging
 
 import settings
 
+
 class BaseBot(object):
     """
     Base class for all the bots.

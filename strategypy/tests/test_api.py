@@ -8,7 +8,7 @@ from core.players import Unit
 class TestBaseBot(unittest.TestCase):
     def setUp(self):
         self.mocked_player = Mock(pk=1)
-        self.mocked_unit = Mock(spec=Unit, player=self.mocked_player)
+        self.mocked_unit = Mock(spec=Unit, player=self.mocked_player, pk=1)
         self.base_bot = BaseBot(self.mocked_unit)
 
     def test_init(self):

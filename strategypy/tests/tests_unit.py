@@ -16,7 +16,7 @@ class TestUnitMove(unittest.TestCase):
     def setUp(self):
         # Should we patch __init__ to better isolate the test? TBD
         player = Mock(game=Mock(occupied_cells=set()))
-        self.unit = Unit(player)
+        self.unit = Unit(player, pk=1)
 
     def test_move_nonsense(self):
         self.unit.x = 1

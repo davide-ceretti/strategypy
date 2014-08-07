@@ -1,5 +1,4 @@
 import random
-import pygame
 
 import settings
 
@@ -12,16 +11,7 @@ class Player(object):
         self.pk = pk
         self.game = game
         self.bot_class = bot_class
-        self.units = [Unit(self) for _ in xrange(settings.UNITS)]
-        self.set_color_and_name()
-
-    def set_color_and_name(self):
-        """
-        Assign a color and a name to the player
-        """
-        name, color = settings.COLORS.get(self.pk, settings.DEFAULT_COLOR_NAME)
-        self.color = color
-        self.name = name
+        self.units = [Unit(self, i) for i in xrange(settings.UNITS)]
 
     def get_bot_class_module_name(self):
         """
@@ -37,12 +27,13 @@ class Unit(object):
     A single unit controlled by a Player. It's represented
     on the game grid by a small coloured square.
     """
-    def __init__(self, player):
+    def __init__(self, player, pk):
         self.x = 0
         self.y = 0
         self.player = player
         self.spawn_random()
         self.bot = player.bot_class(self)
+        self.pk = pk
 
     def action(self):
         """
@@ -50,19 +41,11 @@ class Unit(object):
         """
         self.bot.__process_action__()
 
-    def render(self):
-        """
-        Render the unit on the grid
-        """
-        surface = pygame.display.get_surface()
-        pygame.draw.rect(
-            surface, self.player.color, settings.cell(self.x, self.y)
-        )
-
     def move(self, direction):
         """
         Move the unit up, down, left or right
         """
+        X, Y = settings.GRID_SIZE
         up = {
             'condition': self.y > 0,
             'dx': 0,
@@ -70,7 +53,7 @@ class Unit(object):
         }
 
         down = {
-            'condition': self.y < settings.GRID_SIZE[1] - 1,
+            'condition': self.y < Y - 1,
             'dx': 0,
             'dy': 1,
         }
@@ -82,7 +65,7 @@ class Unit(object):
         }
 
         right = {
-            'condition': self.x < settings.GRID_SIZE[0] - 1,
+            'condition': self.x < X - 1,
             'dx': 1,
             'dy': 0,
         }

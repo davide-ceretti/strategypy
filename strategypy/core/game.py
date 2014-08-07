@@ -1,21 +1,18 @@
 from random import shuffle
+import json
 
-import pygame
-
-import settings
 import bots
+import settings
 from core.players import Player
 
 
 class Game(object):
     def __init__(self, *args):
         self.args = args
+        self.data = []
         self.occupied_cells = set()
-        self.init_screen()
         self.init_bots()
         self.init_players()
-        self.done = False
-        self.victorious_player = None
 
     def auto_update_occupied_cells(self):
         """
@@ -23,15 +20,6 @@ class Game(object):
         """
         # TODO: Optimize by adding add update_occupied_cells instead
         self.occupied_cells = {(unit.x, unit.y) for unit in self.units}
-
-    def init_screen(self):
-        """
-        Initialize screen
-        """
-        self.screen = pygame.display.get_surface()
-        self.screen_rect = self.screen.get_rect()
-        self.clock = pygame.time.Clock()
-        self.fps = settings.FPS
 
     def init_players(self):
         """
@@ -54,105 +42,57 @@ class Game(object):
             __import__('bots.{}'.format(arg))
         self.bots = [getattr(bots, arg).Bot for arg in self.args]
 
+    def snapshot_data(self):
+        snapshot = {}
+        for player in self.players:
+            snapshot[player.pk] = {}
+            for unit in player.units:
+                snapshot[player.pk][unit.pk] = unit.current_cell
+        self.data.append(snapshot)
+
     @property
     def units(self):
         """
         All the units in the Game
         """
-        return [unit for player in self.players for unit in player.units]
-
-    def event_loop(self):
-        """
-        Fetch for events
-        """
-        for event in pygame.event.get():
-            self.keys = pygame.key.get_pressed()
-            if event.type == pygame.QUIT or self.keys[pygame.K_ESCAPE]:
-                self.done = True
+        return (unit for player in self.players for unit in player.units)
 
     def update(self):
         """
         Fetch all unit positions and action units
         """
-        units = [unit for player in self.players for unit in player.units]
+        units = list(self.units)
         shuffle(units)
         for unit in units:
             unit.action()
             self.auto_update_occupied_cells()
 
-    def draw(self):
-        """
-        Main drawing function called in the infinite loop
-        """
-        self.screen.fill(settings.BG_COLOR)
-        for unit in self.units:
-            unit.render()
-        self.draw_grid()
-
-    def draw_grid(self):
-        """
-        Draw a grid according to the game settings
-        """
-        X, Y = settings.SCREEN_SIZE
-        gap_x, gap_y = settings.UNIT_SIZE
-        for i in xrange(0, X+1, gap_x):
-            pygame.draw.line(
-                self.screen,
-                settings.GRID_COLOR,
-                (i, 0),
-                (i, Y),
-                1,
-            )
-        for i in xrange(0, Y+1, gap_y):
-            pygame.draw.line(
-                self.screen,
-                settings.GRID_COLOR,
-                (0, i),
-                (X, i),
-                1,
-            )
-
-    def display_caption(self):
-        """
-        Show the program's FPS in the window handle
-        and the winner if there is one
-        """
-        fps = self.clock.get_fps()
-        winner_info = '- WINNER: {} ({})'.format(
-            self.victorious_player.name,
-            self.victorious_player.get_bot_class_module_name()) \
-            if self.victorious_player else ''
-        caption = "{} - FPS: {:.2f} {}".format(
-            settings.CAPTION, fps, winner_info)
-        pygame.display.set_caption(caption)
-
-    def check_for_victory(self):
+    def get_winner(self):
         """
         Determine whether the game has ended or not and
-        set the victorious_player attribute accordingly.
+        return the victorious_player accordingly.
         Condition of victory: all the units should be aligned
         either vertically or horizontaly
         """
-        if self.victorious_player:
-            return
-
         for player in self.players:
             positions = [unit.current_cell for unit in player.units]
             xs = set(x for x, y in positions)
             ys = set(y for x, y in positions)
             if len(xs) == 1 or len(ys) == 1:
                 # We have a winner :)
-                self.victorious_player = player
+                return player
 
     def main_loop(self):
         """
         The main loop of the game, can be interrupted by events
         """
-        while not self.done:
-            self.event_loop()
+        counter = 0
+        winner = None
+        while counter < settings.MAX_TURNS and winner is None:
             self.update()
-            self.draw()
-            pygame.display.update()
-            self.clock.tick(self.fps)
-            self.check_for_victory()
-            self.display_caption()
+            winner = self.get_winner()
+            self.snapshot_data()
+            counter += 1
+            print counter
+        winner = None if winner is None else winner.get_bot_class_module_name()
+        print 'Done {} {}'.format(str(counter), winner)
