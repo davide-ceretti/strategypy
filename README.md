@@ -8,6 +8,16 @@ The idea is to provide a framework so that people can implement their own bot fo
 
 Pull requests are welcomed, expecially if you want to submit your own bot. Bear in mind the the BaseBot API is not final yet and it might change quite often.
 
+Game rules
+----------
+
+Each player controls a set amount of cells in a grid. The behaviour of these cells is defined by a Bot that implements a specific interface; each cell of the player is represented by an instance of the Bot class.
+
+The game ends when only one player has still cells alive in the grid.
+A cell is killed if in the 9-cells subgrid centered on itself the number of the cells belonging to enemy players is more then the cells belonging to the owner of the cell.
+
+Have a look at settings.py if you want to change some of the game basic settings.
+
 Installation
 ------------
 
