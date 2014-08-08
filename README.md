@@ -14,10 +14,17 @@ Installation
 Usage
 -----
 
-* ```source scripts/run_tests```
-* ```source scripts/run_example```
+* ```./run_tests```
+* ```./run_example```
 
 General usage is ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
+
+The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
+
+You might want to pipe it to a FE, for example:
+
+python strategypy/main.py move_up move_down move_left move_right | python strategypy/simplefe.py
+
 
 TODO / Improvements
 -------------------
@@ -25,7 +32,7 @@ TODO / Improvements
 * API for Bots
 * Security (Disable os, HTTP etc..)
 * Anti-cheating (Isolate bots from what is not exposed by the API)
-* Drop pygame for a JS FE (Game still played in Python)
 * Numpy / Performance improvements
 * Performance tracking
 * Rework game rules and engine to make it more interesting
+* Build JS front-end

@@ -1,5 +1,6 @@
 from random import shuffle
 import json
+import sys
 
 import bots
 import settings
@@ -50,6 +51,20 @@ class Game(object):
                 snapshot[player.pk][unit.pk] = unit.current_cell
         self.data.append(snapshot)
 
+    def build_json_data(self):
+        players = {
+            player.pk: player.get_bot_class_module_name()
+            for player in self.players
+        }
+        winner = self.get_winner()
+        data = {
+            'frames': self.data,
+            'winner': None if winner is None else winner.pk,
+            'turns': self.counter,
+            'players': players
+        }
+        return json.dumps(data)
+
     @property
     def units(self):
         """
@@ -86,13 +101,11 @@ class Game(object):
         """
         The main loop of the game, can be interrupted by events
         """
-        counter = 0
+        self.counter = 0
         winner = None
-        while counter < settings.MAX_TURNS and winner is None:
+        while self.counter < settings.MAX_TURNS and winner is None:
             self.update()
             winner = self.get_winner()
             self.snapshot_data()
-            counter += 1
-            print counter
-        winner = None if winner is None else winner.get_bot_class_module_name()
-        print 'Done {} {}'.format(str(counter), winner)
+            self.counter += 1
+        sys.stdout.write(self.build_json_data())
