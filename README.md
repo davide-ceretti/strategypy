@@ -6,6 +6,8 @@ strategypy
 
 The idea is to provide a framework so that people can implement their own bot for a simple strategy game and compete versus each other. The project is currently in development (no alpha yet).
 
+Pull requests are welcomed, expecially if you want to submit your own bot. Bear in mind the the BaseBot API is not final yet and it might change quite often.
+
 Installation
 ------------
 
@@ -14,16 +16,24 @@ Installation
 Usage
 -----
 
+To run all the tests:
 * ```./run_tests```
+
+To run an example game with basic bots and console FE:
 * ```./run_example```
 
-General usage is ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
+General usage:
+* ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
 
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
 
-You might want to pipe it to a FE, for example:
+This can be either be saved on a file so that it can be loaded later by a FE:
+* python strategypy/main.py killer pray pray
 
-python strategypy/main.py move_up move_down move_left move_right | python strategypy/simplefe.py
+or it can be piped it directly into a FE, for example:
+* python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py
+
+See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
 
 
 TODO / Improvements
