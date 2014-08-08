@@ -2,7 +2,7 @@ import unittest
 from mock import Mock, patch
 
 from api import BaseBot
-from core.players import Unit
+from components import Unit
 
 
 class TestBaseBot(unittest.TestCase):

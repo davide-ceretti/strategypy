@@ -1,8 +1,8 @@
 import unittest
 from mock import Mock
 
-from core.game import Game
-from core.players import Player, Unit
+from game import Game
+from components import Player, Unit
 from api import BaseBot
 
 

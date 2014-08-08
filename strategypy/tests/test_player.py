@@ -1,7 +1,7 @@
 from mock import patch
 import unittest
 
-from core.players import Player
+from components import Player
 
 # TODO: Stop patching __init__ for fuck sake
 

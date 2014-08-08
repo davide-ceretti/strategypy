@@ -4,7 +4,7 @@ import sys
 
 import bots
 import settings
-from core.players import Player
+from components import Player
 
 
 class Game(object):
