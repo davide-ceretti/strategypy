@@ -82,20 +82,58 @@ class Game(object):
         for unit in units:
             unit.action()
             self.auto_update_occupied_cells()
+        self.kill_units()
+        self.auto_update_occupied_cells()
+
+    def kill_units(self):
+        def is_blocked(position):
+            X, Y = settings.GRID_SIZE
+            x, y = position
+            a = position in self.occupied_cells
+            # Outside the grid
+            b = x < 0 or x >= X
+            c = y < 0 or y >= Y
+            return a or b or c
+
+        to_be_removed = []
+
+        for unit in self.units:
+            x, y = unit.current_cell
+            blocked = 0
+            for xd, yd in (
+                (0, 1), (1, 0), (0, -1), (-1, 0)
+            ):
+                ox = x + xd
+                oy = y + yd
+                if is_blocked((ox, oy)):
+                    blocked += 1
+
+            if blocked == 4:
+                to_be_removed.append(unit)
+
+        for unit in to_be_removed:
+            unit.player.units.remove(unit)
+
+
+    # def get_winner(self):
+    #     """
+    #     Determine whether the game has ended or not and
+    #     return the victorious_player accordingly.
+    #     Condition of victory: all the units should be aligned
+    #     either vertically or horizontaly
+    #     """
+    #     for player in self.players:
+    #         positions = [unit.current_cell for unit in player.units]
+    #         xs = set(x for x, y in positions)
+    #         ys = set(y for x, y in positions)
+    #         if len(xs) == 1 or len(ys) == 1:
+    #             # We have a winner :)
+    #             return player
 
     def get_winner(self):
-        """
-        Determine whether the game has ended or not and
-        return the victorious_player accordingly.
-        Condition of victory: all the units should be aligned
-        either vertically or horizontaly
-        """
+        min_units = min(len(player.units) for player in self.players)
         for player in self.players:
-            positions = [unit.current_cell for unit in player.units]
-            xs = set(x for x, y in positions)
-            ys = set(y for x, y in positions)
-            if len(xs) == 1 or len(ys) == 1:
-                # We have a winner :)
+            if len(player.units) - min_units > settings.WIN_DIFF:
                 return player
 
     def main_loop(self):
