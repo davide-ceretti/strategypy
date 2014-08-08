@@ -2,11 +2,9 @@
 All the settings/constants of the game
 """
 
-GRID_SIZE = (30, 30)
-UNITS = 20
-MAX_TURNS = 150
-
-WIN_DIFF = 5
+GRID_SIZE = (40, 40)
+UNITS = 10
+MAX_TURNS = 3000
 
 try:
     from local_settings import *

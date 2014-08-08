@@ -26,6 +26,22 @@ class BaseBot(object):
         raise NotImplementedError
 
     @property
+    def data(self):
+        return self.__unit__.player.game.data[:]
+
+    @property
+    def current_data(self):
+        return self.__unit__.player.game.current_data()
+
+    @property
+    def pk(self):
+        return self.__unit__.pk
+
+    @property
+    def player_pk(self):
+        return self.__unit__.player.pk
+
+    @property
     def position(self):
         """
         The position of the unit in the grid
