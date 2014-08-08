@@ -20,7 +20,7 @@ class Game(object):
         Update the list of the cells currently occupied by units
         """
         # TODO: Optimize by adding add update_occupied_cells instead
-        self.occupied_cells = {(unit.x, unit.y) for unit in self.units}
+        self.occupied_cells = {unit.current_cell for unit in self.units}
 
     def init_players(self):
         """
@@ -109,4 +109,5 @@ class Game(object):
             winner = self.get_winner()
             self.snapshot_data()
             self.counter += 1
+        # import ipdb; ipdb.set_trace()
         sys.stdout.write(self.build_json_data())
