@@ -1,23 +1,23 @@
 import unittest
-from mock import Mock
+from mock import Mock, patch
 
 from game import Game
 from components import Player, Unit
 from api import BaseBot
 
 
+@patch.object(Game, "__init__", side_effect=lambda *args: None)
 class TestInitPlayers(unittest.TestCase):
     def setUp(self):
-        Game.__init__ = lambda x: None
         self.game = Game()
         self.game.occupied_cells = set()
 
-    def test_no_bots(self):
+    def test_no_bots(self, init):
         self.game.bots = []
         self.game.init_players()
         self.assertListEqual(self.game.players, [])
 
-    def test_multiple_bots(self):
+    def test_multiple_bots(self, init):
         class BotOne(BaseBot):
             pass
 
@@ -37,29 +37,30 @@ class TestInitPlayers(unittest.TestCase):
         self.assertIsInstance(second_player, Player)
 
 
+@patch.object(Game, "__init__", side_effect=lambda *args: None)
 class TestInitBots(unittest.TestCase):
     def setUp(self):
         Game.__init__ = lambda x: None
         self.game = Game()
 
-    def test_no_args(self):
+    def test_no_args(self, init):
         self.game.args = []
         self.game.init_bots()
         self.assertListEqual(self.game.bots, [])
 
-    def test_one_bot(self):
+    def test_one_bot(self, init):
         self.game.args = ['test_one']
         self.game.init_bots()
         from bots.test_one import Bot
         self.assertListEqual(self.game.bots, [Bot])
 
 
+@patch.object(Game, "__init__", side_effect=lambda *args: None)
 class TestCheckForVictory(unittest.TestCase):
     def setUp(self):
-        Game.__init__ = lambda x: None
         self.game = Game()
 
-    def test_no_winners(self):
+    def test_no_winners(self, init):
         player_one = Mock(spec=Player)
         player_one.units = [
             Mock(spec=Unit, current_cell=(1, 3), pk=1),
@@ -72,7 +73,7 @@ class TestCheckForVictory(unittest.TestCase):
 
         self.assertIsNone(winner)
 
-    def test_winner_horizontal(self):
+    def test_winner_horizontal(self, init):
         player_one = Mock(spec=Player)
         player_one.units = [
             Mock(spec=Unit, current_cell=(1, 3), pk=1),
@@ -85,7 +86,7 @@ class TestCheckForVictory(unittest.TestCase):
 
         self.assertEqual(winner, player_one)
 
-    def test_winner_vertical(self):
+    def test_winner_vertical(self, init):
         player_one = Mock(spec=Player)
         player_one.units = [
             Mock(spec=Unit, current_cell=(1, 3), pk=1),
