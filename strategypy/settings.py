@@ -2,8 +2,8 @@
 All the settings/constants of the game
 """
 
-GRID_SIZE = (50, 50)
-UNITS = 7
+GRID_SIZE = (80, 60)
+UNITS = 20
 MAX_TURNS = 1000
 
 try:

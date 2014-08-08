@@ -61,7 +61,8 @@ class Game(object):
             'frames': self.data,
             'winner': None if winner is None else winner.pk,
             'turns': self.counter,
-            'players': players
+            'players': players,
+            'grid_size': settings.GRID_SIZE,
         }
         return json.dumps(data)
 
