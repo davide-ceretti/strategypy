@@ -28,10 +28,10 @@ General usage:
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
 
 This can be either be saved on a file so that it can be loaded later by a FE:
-* python strategypy/main.py killer pray pray
+* ```python strategypy/main.py killer prey prey```
 
 or it can be piped it directly into a FE, for example:
-* python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py
+* ```python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py```
 
 See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
 
