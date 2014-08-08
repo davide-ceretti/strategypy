@@ -58,50 +58,6 @@ class TestInitBots(unittest.TestCase):
 
 
 @patch.object(Game, "__init__", side_effect=lambda *args: None)
-class TestCheckForVictory(unittest.TestCase):
-    def setUp(self):
-        self.game = Game()
-
-    def test_no_winners(self, init):
-        player_one = Mock(spec=Player)
-        player_one.units = [
-            Mock(spec=Unit, current_cell=(1, 3), pk=1),
-            Mock(spec=Unit, current_cell=(2, 4), pk=2),
-        ]
-
-        self.game.players = [player_one]
-
-        winner = self.game.get_winner()
-
-        self.assertIsNone(winner)
-
-    def test_winner_horizontal(self, init):
-        player_one = Mock(spec=Player)
-        player_one.units = [
-            Mock(spec=Unit, current_cell=(1, 3), pk=1),
-            Mock(spec=Unit, current_cell=(2, 3), pk=2),
-        ]
-
-        self.game.players = [player_one]
-
-        winner = self.game.get_winner()
-
-        self.assertEqual(winner, player_one)
-
-    def test_winner_vertical(self, init):
-        player_one = Mock(spec=Player)
-        player_one.units = [
-            Mock(spec=Unit, current_cell=(1, 3), pk=1),
-            Mock(spec=Unit, current_cell=(1, 2), pk=2),
-        ]
-        self.game.players = [player_one]
-
-        winner = self.game.get_winner()
-
-        self.assertEqual(winner, player_one)
-
-
-@patch.object(Game, "__init__", side_effect=lambda *args: None)
 class TestUpdateOccupiedCells(unittest.TestCase):
     def setUp(self):
         self.game = Game()
