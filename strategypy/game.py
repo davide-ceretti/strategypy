@@ -20,7 +20,7 @@ class Game(object):
         Update the list of the cells currently occupied by units
         """
         # TODO: Optimize by adding add update_occupied_cells instead
-        self.occupied_cells = {unit.current_cell for unit in self.units}
+        self.occupied_cells = {unit.current_cell: unit for unit in self.units}
 
     def init_players(self):
         """
@@ -30,9 +30,11 @@ class Game(object):
         # Player __init__ need to access Game.players attribute
         # TODO: Code smell?
         self.players = []
+        self.all_players = []
         for i, bot_class in enumerate(self.bots):
             player = Player(i, bot_class, self)
             self.players.append(player)
+            self.all_players.append(player)
 
     def init_bots(self):
         """
@@ -60,6 +62,18 @@ class Game(object):
             player.pk: player.get_bot_class_module_name()
             for player in self.players
         }
+
+        all_players = {
+            player.pk: {
+                'name': player.get_bot_class_module_name(),
+                'has_killed': {
+                    killed.get_bot_class_module_name(): num_times
+                    for killed, num_times in player.has_killed.items()
+                },
+            }
+            for player in self.all_players
+        }
+        
         winner = self.get_winner()
         data = {
             'frames': self.data,
@@ -67,6 +81,7 @@ class Game(object):
             'turns': self.counter,
             'players': players,
             'grid_size': settings.GRID_SIZE,
+            'all_players': all_players
         }
         return json.dumps(data)
 
@@ -96,6 +111,8 @@ class Game(object):
             x, y = unit.current_cell
             player_units = current_data[player_pk].values()
 
+            killers = []
+
             allies, enemies = 0, 0
             for xd in xrange(-1, 2):
                 for yd in xrange(-1, 2):
@@ -112,8 +129,9 @@ class Game(object):
                         allies += 1
                     else:
                         enemies += 1
+                        killers.append(self.occupied_cells[(ox, oy)])
 
-            return enemies > allies
+            return enemies > allies, killers
 
         def is_outside(x, y):
             X, Y = settings.GRID_SIZE
@@ -126,8 +144,22 @@ class Game(object):
 
         for unit in self.units:
             x, y = unit.current_cell
-            if is_outnumbered(unit, unit.player.pk):
+            to_remove, killer_units = is_outnumbered(unit, unit.player.pk)
+
+            if to_remove:
                 to_be_removed.append(unit)
+      
+                # update the players stats
+                killer_players = {unit.player for unit in killer_units}
+                for killer_player in killer_players:
+
+                    # increment the killers 
+                    killer_player.has_killed.setdefault(unit.player, 0)
+                    killer_player.has_killed[unit.player] += 1
+                    
+                    # and the killee 
+                    unit.player.was_killed_by.setdefault(killer_player, 0)
+                    unit.player.was_killed_by[killer_player] += 1
 
         for unit in to_be_removed:
             unit.player.units.remove(unit)
