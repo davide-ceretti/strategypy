@@ -82,13 +82,23 @@ class Unit(object):
         movement = possible_movements.get(direction, None)
         if movement is None:
             return
-        inside = movement['condition']
-        x = self.x + movement['dx']
-        y = self.y + movement['dy']
-        free = (x, y) not in self.player.game.occupied_cells
-        if inside and free:
-            self.x = x
-            self.y = y
+
+        if settings.BORDER == 'WALL':
+            inside = movement['condition']
+            x = self.x + movement['dx']
+            y = self.y + movement['dy']
+            free = (x, y) not in self.player.game.occupied_cells
+            if inside and free:
+                self.x = x
+                self.y = y
+
+        if settings.BORDER == 'WRAP':
+            x = (self.x + movement['dx']) % X
+            y = (self.y + movement['dy']) % Y
+            free = (x, y) not in self.player.game.occupied_cells
+            if free:
+                self.x = x
+                self.y = y
 
     def spawn_random(self):
         """
