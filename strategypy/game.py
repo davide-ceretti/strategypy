@@ -11,7 +11,7 @@ class Game(object):
     def __init__(self, *args):
         self.args = args
         self.data = []
-        self.occupied_cells = set()
+        self.occupied_cells = {}
         self.init_bots()
         self.init_players()
 
@@ -165,15 +165,23 @@ class Game(object):
                     unit.player.was_killed_by.setdefault(killer_player, 0)
                     unit.player.was_killed_by[killer_player] += 1
 
-        for unit in to_be_removed:
-            unit.player.units.remove(unit)
+        if settings.RESPAWN:
+            for unit in to_be_removed:
+                unit.place_randomly()
+        
+        else:
+            for unit in to_be_removed:
+                unit.player.units.remove(unit)
+        
+            to_be_removed = [
+                player for player in self.players
+                if len(player.units) == 0
+            ]
+            for player in to_be_removed:
+                self.players.remove(player)
 
-        to_be_removed = [
-            player for player in self.players
-            if len(player.units) == 0
-        ]
-        for player in to_be_removed:
-            self.players.remove(player)
+
+
 
     def get_winner(self):
         alive = [player for player in self.players if len(player.units) > 0]
