@@ -6,6 +6,8 @@ if __name__ == "__main__":
     output_dict = json.loads(output)
     winner = output_dict['winner']
     players = output_dict['players']
+    all_players = output_dict['all_players']
+         
     turns = output_dict['turns']
     initial_frame = output_dict['frames'][0]
     last_frame = output_dict['frames'][-1]
@@ -19,3 +21,14 @@ if __name__ == "__main__":
         print 'Player {} won in {} turns'.format(winner, turns)
     print 'Initial unit count: {}'.format(initial_count)
     print 'Final unit count: {}'.format(final_count)
+
+    for player in all_players.values():
+        print 'Player {} killed: '.format(player['name']),
+        for killed_player, num_times in player['has_killed'].items():
+            print '{} x {}, '.format(killed_player, num_times),
+        print
+    for player in all_players.values():
+        print 'Player {} was killed by: '.format(player['name']),
+        for killed_player, num_times in player['was_killed_by'].items():
+            print '{} x {}, '.format(killed_player, num_times),
+        print

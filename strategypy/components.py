@@ -12,6 +12,8 @@ class Player(object):
         self.game = game
         self.bot_class = bot_class
         self.units = [Unit(self, i) for i in xrange(settings.UNITS)]
+        self.has_killed = {}
+        self.was_killed_by = {}
 
     def get_bot_class_module_name(self):
         """
