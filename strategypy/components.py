@@ -97,13 +97,13 @@ class Unit(object):
         self.place_randomly()
         # FIXME: As we are still creating players at this point we have
         # To update occupied_cells manually
-        self.player.game.occupied_cells.add((self.x, self.y))
+        self.player.game.occupied_cells[(self.x, self.y)] = self
 
     def place_randomly(self):
         X, Y = settings.GRID_SIZE
         all_cells = {(x, y) for x in xrange(0, X) for y in xrange(0, Y)}
         occupied_cells = self.player.game.occupied_cells
-        open_cells = all_cells - occupied_cells
+        open_cells = all_cells - set(occupied_cells.keys())
         self.x, self.y = random.sample(open_cells, 1)[0]
 
     @property

@@ -11,7 +11,7 @@ class Game(object):
     def __init__(self, *args):
         self.args = args
         self.data = []
-        self.occupied_cells = set()
+        self.occupied_cells = {}
         self.init_bots()
         self.init_players()
 
