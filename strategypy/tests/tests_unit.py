@@ -15,8 +15,9 @@ class TestUnitMove(unittest.TestCase):
     """
     def setUp(self):
         # Should we patch __init__ to better isolate the test? TBD
-        player = Mock(game=Mock(occupied_cells=set()))
+        player = Mock(game=Mock(occupied_cells={}))
         self.unit = Unit(player, pk=1)
+        self.unit_two = Unit(player, pk=2)
 
     def test_move_nonsense(self):
         self.unit.x = 1
@@ -46,7 +47,7 @@ class TestUnitMove(unittest.TestCase):
         self.assertEqual(self.unit.y, 0)
 
     def test_move_up_occupied(self):
-        self.unit.player.game.occupied_cells = {(1, 0)}
+        self.unit.player.game.occupied_cells = {(1, 0): self.unit_two}
         self.unit.x = 1
         self.unit.y = 1
 
@@ -74,7 +75,7 @@ class TestUnitMove(unittest.TestCase):
         self.assertEqual(self.unit.y, 2)
 
     def test_move_left_occupied(self):
-        self.unit.player.game.occupied_cells = {(0, 1)}
+        self.unit.player.game.occupied_cells = {(0, 1): self.unit_two}
         self.unit.x = 1
         self.unit.y = 1
 
@@ -102,7 +103,7 @@ class TestUnitMove(unittest.TestCase):
         self.assertEqual(self.unit.y, 3)
 
     def test_move_down_occupied(self):
-        self.unit.player.game.occupied_cells = {(1, 2)}
+        self.unit.player.game.occupied_cells = {(1, 2): self.unit_two}
         self.unit.x = 1
         self.unit.y = 1
 
@@ -130,7 +131,7 @@ class TestUnitMove(unittest.TestCase):
         self.assertEqual(self.unit.y, 2)
 
     def test_move_right_occupied(self):
-        self.unit.player.game.occupied_cells = {(2, 1)}
+        self.unit.player.game.occupied_cells = {(2, 1): self.unit_two}
         self.unit.x = 1
         self.unit.y = 1
 

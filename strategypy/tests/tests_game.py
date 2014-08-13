@@ -12,7 +12,7 @@ from api import BaseBot
 class TestInitPlayers(unittest.TestCase):
     def setUp(self):
         self.game = Game()
-        self.game.occupied_cells = set()
+        self.game.occupied_cells = {}
 
     def test_no_bots(self, init):
         self.game.bots = []
@@ -61,26 +61,29 @@ class TestInitBots(unittest.TestCase):
 class TestUpdateOccupiedCells(unittest.TestCase):
     def setUp(self):
         self.game = Game()
-        self.game.occupied_cells = set()
+        self.game.occupied_cells = {}
 
     def test_update_occupied_cells(self, init):
         player_one = Mock(spec=Player)
         player_two = Mock(spec=Player)
-        player_one.units = [
-            Mock(spec=Unit, current_cell=(1, 3), pk=1),
-            Mock(spec=Unit, current_cell=(2, 4), pk=2),
-        ]
-        player_two.units = [
-            Mock(spec=Unit, current_cell=(3, 5), pk=1),
-            Mock(spec=Unit, current_cell=(4, 6), pk=2),
-        ]
+        unit_one = Mock(spec=Unit, current_cell=(1, 3), pk=1)
+        unit_two = Mock(spec=Unit, current_cell=(2, 4), pk=2)
+        player_one.units = [unit_one, unit_two]
+        unit_three = Mock(spec=Unit, current_cell=(3, 5), pk=1)
+        unit_four = Mock(spec=Unit, current_cell=(4, 6), pk=2)
+        player_two.units = [unit_three, unit_four]
 
         self.game.players = [player_one, player_two]
 
         self.game.auto_update_occupied_cells()
 
-        expected = {(1, 3), (2, 4), (3, 5), (4, 6)}
-        self.assertSetEqual(self.game.occupied_cells, expected)
+        expected = {
+            (1, 3): unit_one,
+            (2, 4): unit_two,
+            (3, 5): unit_three,
+            (4, 6): unit_four
+        }
+        self.assertDictEqual(self.game.occupied_cells, expected)
 
 
 @patch.object(Game, "__init__", side_effect=lambda *args: None)
