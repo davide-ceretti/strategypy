@@ -1,6 +1,5 @@
 from random import shuffle
 import json
-import sys
 
 import bots
 import settings
@@ -197,4 +196,4 @@ class Game(object):
             winner = self.get_winner()
             self.snapshot_data()
             self.counter += 1
-        sys.stdout.write(self.build_json_data())
+        return self.build_json_data()
