@@ -77,7 +77,7 @@ class Game(object):
             }
             for player in self.all_players
         }
-        
+
         winner = self.get_winner()
         data = {
             'frames': self.data,
@@ -152,36 +152,33 @@ class Game(object):
 
             if to_remove:
                 to_be_removed.append(unit)
-      
+
                 # update the players stats
                 killer_players = {unit.player for unit in killer_units}
                 for killer_player in killer_players:
 
-                    # increment the killers 
+                    # increment the killers
                     killer_player.has_killed.setdefault(unit.player, 0)
                     killer_player.has_killed[unit.player] += 1
-                    
-                    # and the killee 
+
+                    # and the killee
                     unit.player.was_killed_by.setdefault(killer_player, 0)
                     unit.player.was_killed_by[killer_player] += 1
 
         if settings.RESPAWN:
             for unit in to_be_removed:
                 unit.place_randomly()
-        
+
         else:
             for unit in to_be_removed:
                 unit.player.units.remove(unit)
-        
+
             to_be_removed = [
                 player for player in self.players
                 if len(player.units) == 0
             ]
             for player in to_be_removed:
                 self.players.remove(player)
-
-
-
 
     def get_winner(self):
         alive = [player for player in self.players if len(player.units) > 0]
