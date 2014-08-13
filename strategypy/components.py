@@ -43,6 +43,15 @@ class Unit(object):
         """
         self.bot.__process_action__()
 
+    def notify_has_killed(self, unit):
+        self.bot.notify_has_killed(unit.bot)
+
+    def notify_was_killed_by(self, units):
+        self.bot.notify_was_killed_by([unit.bot for unit in units])
+
+    def notify_respawned(self):
+        self.bot.notify_respawned()
+
     def move(self, direction):
         """
         Move the unit up, down, left or right

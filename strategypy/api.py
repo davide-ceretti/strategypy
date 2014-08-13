@@ -24,6 +24,15 @@ class BaseBot(object):
         """
         raise NotImplementedError
 
+    def notify_has_killed(self, unit):
+        pass
+
+    def notify_was_killed_by(self, units):
+        pass
+
+    def notify_respawned(self):
+        pass
+
     @property
     def data(self):
         return self.__unit__.player.game.data[:]
