@@ -70,6 +70,10 @@ class Game(object):
                     killed.get_bot_class_module_name(): num_times
                     for killed, num_times in player.has_killed.items()
                 },
+                'was_killed_by': {
+                    killed.get_bot_class_module_name(): num_times
+                    for killed, num_times in player.was_killed_by.items()
+                },
             }
             for player in self.all_players
         }

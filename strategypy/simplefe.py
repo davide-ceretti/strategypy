@@ -27,3 +27,8 @@ if __name__ == "__main__":
         for killed_player, num_times in player['has_killed'].items():
             print '{} x {}, '.format(killed_player, num_times),
         print
+    for player in all_players.values():
+        print 'Player {} was killed by: '.format(player['name']),
+        for killed_player, num_times in player['was_killed_by'].items():
+            print '{} x {}, '.format(killed_player, num_times),
+        print
