@@ -172,7 +172,6 @@ class Game(object):
         if settings.RESPAWN:
             for unit in to_be_removed:
                 unit.place_randomly()
-                unit.notify_respawned()
 
         else:
             for unit in to_be_removed:

@@ -34,29 +34,44 @@ class Unit(object):
         self.y = 0
         self.player = player
         self.spawn_random()
-        self.bot = player.bot_class(self)
         self.pk = pk
         self.has_killed = []
         self.was_killed_by = []
-        self.respawned = False
 
+        ctx = {
+            'player_pk': self.player.pk,
+            'pk': self.pk,
+            'respawn': settings.RESPAWN,
+            'grid_size': settings.GRID_SIZE,
+        }
+
+
+        self.bot = player.bot_class(ctx)
+        
+        
     def action(self):
         """
         Call the action method defined in the bot
         """
-        self.bot.__process_action__()
-        self.has_killed = []
-        self.was_killed_by = []
-        self.respawned = False
+        ctx = self.assemble_ctx_for_bot()
+        direction = self.bot.__process_action__(ctx)
+        self.move(direction)
+
+    def assemble_ctx_for_bot(self):
+        ctx = {
+            'current_data': self.player.game.current_data(),
+            'has_killed': [(u.player.pk, u.pk) for u in self.has_killed],
+            'was_killed_by': [(u.player.pk, u.pk) for u in self.was_killed_by],
+            'position': self.current_cell,
+        }
+
+        return ctx
 
     def notify_has_killed(self, unit):
         self.has_killed.append(unit)
 
     def notify_was_killed_by(self, units):
         self.was_killed_by = units
-
-    def notify_respawned(self):
-        self.respawned = True
 
     def move(self, direction):
         """

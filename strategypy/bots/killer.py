@@ -6,7 +6,7 @@ from api import BaseBot
 class Bot(BaseBot):
     pray = {}
 
-    def action(self):
+    def action(self, ctx):
         current_frame = self.current_data
         if 'unit' in self.pray and 'player' in self.pray:
             if self.pray['unit'] not in current_frame.get(self.pray['player'], []):

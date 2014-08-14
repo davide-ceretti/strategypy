@@ -4,7 +4,7 @@ from api import BaseBot
 
 
 class Bot(BaseBot):
-    def action(self):
+    def action(self, ctx):
         actions = [
             'move up',
             'move left',
