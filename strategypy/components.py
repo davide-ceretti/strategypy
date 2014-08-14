@@ -36,21 +36,27 @@ class Unit(object):
         self.spawn_random()
         self.bot = player.bot_class(self)
         self.pk = pk
+        self.has_killed = []
+        self.was_killed_by = []
+        self.respawned = False
 
     def action(self):
         """
         Call the action method defined in the bot
         """
         self.bot.__process_action__()
+        self.has_killed = []
+        self.was_killed_by = []
+        self.respawned = False
 
     def notify_has_killed(self, unit):
-        self.bot.notify_has_killed(unit.bot)
+        self.has_killed.append(unit)
 
     def notify_was_killed_by(self, units):
-        self.bot.notify_was_killed_by([unit.bot for unit in units])
+        self.was_killed_by = units
 
     def notify_respawned(self):
-        self.bot.notify_respawned()
+        self.respawned = True
 
     def move(self, direction):
         """

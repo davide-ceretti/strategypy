@@ -24,14 +24,17 @@ class BaseBot(object):
         """
         raise NotImplementedError
 
-    def notify_has_killed(self, unit):
-        pass
+    @property
+    def has_killed(self, unit):
+        return self.__unit__.has_killed
 
-    def notify_was_killed_by(self, units):
-        pass
+    @property
+    def was_killed_by(self, units):
+        return self.__unit__.was_killed_by
 
-    def notify_respawned(self):
-        pass
+    @property
+    def respawned(self):
+        return self.__unit__.respawned
 
     @property
     def data(self):
