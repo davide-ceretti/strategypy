@@ -4,7 +4,7 @@
 strategypy
 ----------
 
-The idea is to provide a framework so that people can implement their own bot for a simple strategy game and compete versus each other. The project is currently in development (no alpha yet).
+The idea is to create a framework so that people can implement their own bot for a simple strategy game and compete versus each other. The project is still in development, but if you checkout everything it is supposed to work just fine.
 
 Pull requests are welcomed, expecially if you want to submit your own bot. Bear in mind the the BaseBot API is not final yet and it might change quite often.
 
@@ -27,10 +27,10 @@ Usage
 -----
 
 To run all the tests:
-* ```./run_tests```
+* ```./run_tests.sh```
 
 To run an example game with basic bots and console FE:
-* ```./run_example```
+* ```./run_example.sh```
 
 General usage:
 * ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
@@ -56,3 +56,4 @@ TODO / Improvements
 * Performance tracking
 * Rework game rules and engine to make it more interesting
 * Build JS front-end
+* More and better unit tests
