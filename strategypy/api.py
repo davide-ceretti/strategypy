@@ -25,11 +25,11 @@ class BaseBot(object):
         raise NotImplementedError
 
     @property
-    def has_killed(self, unit):
+    def has_killed(self):
         return self.__unit__.has_killed
 
     @property
-    def was_killed_by(self, units):
+    def was_killed_by(self):
         return self.__unit__.was_killed_by
 
     @property
