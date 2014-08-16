@@ -99,12 +99,15 @@ class Unit(object):
         # To update occupied_cells manually
         self.player.game.occupied_cells[(self.x, self.y)] = self
 
-    def place_randomly(self):
+    def get_random_location(self):
         X, Y = settings.GRID_SIZE
         all_cells = {(x, y) for x in xrange(0, X) for y in xrange(0, Y)}
         occupied_cells = self.player.game.occupied_cells
         open_cells = all_cells - set(occupied_cells.keys())
-        self.x, self.y = random.sample(open_cells, 1)[0]
+        return random.sample(open_cells, 1)[0]
+
+    def place_randomly(self):
+        self.x, self.y = self.get_random_location()
 
     @property
     def current_cell(self):
