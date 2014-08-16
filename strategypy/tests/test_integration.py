@@ -22,13 +22,6 @@ class TestGame(unittest.TestCase):
         result = game.main_loop()
         return json.loads(result)
 
-    def mock_place_randomly(self, units):
-        def place_unit(unit, *args, **kwargs):
-            for pk, units in units.items():
-                if unit.player.pk == pk:
-                    unit.x, unit.y = units.pop()
-        return place_unit
-
     def test_game_can_run(self):
         result = self.play_game('unittest_static', 'unittest_moveup')
         self.assertIsNotNone(result)
