@@ -15,7 +15,6 @@ class BaseBot(object):
             'move right',
             'move down',
         ]
-        self.__previous_position__ = self.position
 
     def action(self):
         """
@@ -48,18 +47,10 @@ class BaseBot(object):
         """
         return self.__unit__.current_cell
 
-    @property
-    def previous_position(self):
-        """
-        The position of the unit before the last action.
-        """
-        return self.__previous_position__
-
     def __process_action__(self):
         """
         Interpret the message returned by action and execute it
         """
-        pos = self.position
         action = self.action()
         if action not in self.__allowed_actions__:
             if action is not None:
@@ -69,7 +60,6 @@ class BaseBot(object):
             return
         verb, arg = action.split(' ')
         self.__unit__.move(arg)
-        self.__previous_position__ = pos
 
     @property
     def grid_size(self):
