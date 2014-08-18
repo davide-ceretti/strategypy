@@ -38,14 +38,14 @@ class Unit(object):
         self.has_killed = []
         self.was_killed_by = []
 
-        ctx = {
+        self.ctx = {
             'player_pk': self.player.pk,
             'pk': self.pk,
             'respawn': settings.RESPAWN,
             'grid_size': settings.GRID_SIZE,
         }
 
-        self.bot = player.bot_class(ctx)
+        self.bot = player.bot_class(self.ctx)
 
     def action(self):
         """
@@ -62,6 +62,8 @@ class Unit(object):
             'was_killed_by': [(u.player.pk, u.pk) for u in self.was_killed_by],
             'position': self.current_cell,
         }
+
+        ctx.update(self.ctx)
 
         return ctx
 

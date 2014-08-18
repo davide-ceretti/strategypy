@@ -7,14 +7,15 @@ class Bot(BaseBot):
     pray = {}
 
     def action(self, ctx):
-        current_frame = self.current_data
+        current_frame = ctx['current_data']
+        player_pk = ctx['player_pk']
         if 'unit' in self.pray and 'player' in self.pray:
             if self.pray['unit'] not in current_frame.get(self.pray['player'], []):
                 self.pray.pop('unit')
                 self.pray.pop('player')
 
         choices = current_frame.keys()
-        choices.remove(self.player_pk)
+        choices.remove(player_pk)
         if not 'player' in self.pray:
             self.pray['player'] = random.choice(choices)
         if not 'unit' in self.pray:
@@ -23,7 +24,7 @@ class Bot(BaseBot):
             )
 
         # Chase the target
-        x, y = self.position
+        x, y = ctx['position']
         tx, ty = current_frame[self.pray['player']][self.pray['unit']]
         dx = x - tx
         dy = y - ty
