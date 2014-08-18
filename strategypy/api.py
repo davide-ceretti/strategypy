@@ -7,8 +7,7 @@ class BaseBot(object):
     """
     Base class for all the bots.
     """
-    def __init__(self, unit):
-        self.__unit__ = unit
+    def __init__(self, ctx):
         self.__allowed_actions__ = [
             'move up',
             'move left',
@@ -16,54 +15,44 @@ class BaseBot(object):
             'move down',
         ]
 
-    def action(self):
+        self.player_pk = ctx['player_pk']
+        self.pk = ctx['pk']
+        self.respawn = ctx['respawn']
+        self.grid_size = ctx['grid_size']
+
+        self.current_data = None
+        self.has_killed = None
+        self.was_killed_by = None
+        self.position = None
+        
+    def action(self, ctx):
         """
         To be implented in the super class.
         It is supposed to return one of the action defined
         in __allowed_actions__.
         """
+
         raise NotImplementedError
 
-    @property
-    def data(self):
-        return self.__unit__.player.game.data[:]
 
-    @property
-    def current_data(self):
-        return self.__unit__.player.game.current_data()
-
-    @property
-    def pk(self):
-        return self.__unit__.pk
-
-    @property
-    def player_pk(self):
-        return self.__unit__.player.pk
-
-    @property
-    def position(self):
-        """
-        The position of the unit in the grid
-        """
-        return self.__unit__.current_cell
-
-    def __process_action__(self):
+    def __process_action__(self, ctx):
         """
         Interpret the message returned by action and execute it
         """
-        action = self.action()
+        self.current_data = ctx['current_data']
+        self.has_killed = ctx['has_killed']
+        self.was_killed_by = ctx['was_killed_by']
+        self.position = ctx['position']
+        
+        action = self.action(ctx)
+
         if action not in self.__allowed_actions__:
             if action is not None:
                 msg = 'Bot#%s executing not allowed action: %s' % (
                     self.__unit__.player.pk, action)
                 logging.warning(msg)
             return
-        verb, arg = action.split(' ')
-        self.__unit__.move(arg)
 
-    @property
-    def grid_size(self):
-        """
-        Return the size of the grid (X, Y)
-        """
-        return settings.GRID_SIZE
+        verb, arg = action.split(' ')
+        
+        return arg

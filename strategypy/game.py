@@ -152,6 +152,11 @@ class Game(object):
             if to_remove:
                 to_be_removed.append(unit)
 
+                # tell the units that they killed / were killed
+                unit.notify_was_killed_by(killer_units)
+                for killer_unit in killer_units:
+                    killer_unit.notify_has_killed(unit)
+
                 # update the players stats
                 killer_players = {unit.player for unit in killer_units}
                 for killer_player in killer_players:
