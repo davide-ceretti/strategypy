@@ -2,5 +2,5 @@ from api import BaseBot
 
 
 class Bot(BaseBot):
-    def action(self):
+    def action(self, ctx):
         return 'move left'
