@@ -45,10 +45,8 @@ class Unit(object):
             'grid_size': settings.GRID_SIZE,
         }
 
-
         self.bot = player.bot_class(ctx)
-        
-        
+
     def action(self):
         """
         Call the action method defined in the bot

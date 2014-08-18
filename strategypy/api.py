@@ -24,7 +24,7 @@ class BaseBot(object):
         self.has_killed = None
         self.was_killed_by = None
         self.position = None
-        
+
     def action(self, ctx):
         """
         To be implented in the super class.
@@ -34,7 +34,6 @@ class BaseBot(object):
 
         raise NotImplementedError
 
-
     def __process_action__(self, ctx):
         """
         Interpret the message returned by action and execute it
@@ -43,7 +42,7 @@ class BaseBot(object):
         self.has_killed = ctx['has_killed']
         self.was_killed_by = ctx['was_killed_by']
         self.position = ctx['position']
-        
+
         action = self.action(ctx)
 
         if action not in self.__allowed_actions__:
@@ -54,5 +53,5 @@ class BaseBot(object):
             return
 
         verb, arg = action.split(' ')
-        
+
         return arg
