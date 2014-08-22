@@ -196,12 +196,12 @@ class TestKilling(unittest.TestCase):
     The game should look like this. Read horizontally
       0   1   2   3   4
     ---------------------
-    |0 X|0 X|0 X|0 X|X X|
-    |X X|X X|X X|X X|1 1|
-    |X X|X X|X X|1 1|X X|
-    |0 X|X X|1 1|X X|X X|
-    |X X|1 1|1 1|1 1|1 1|
-    |1 1|X X|X X|X X|X X|
+    |0  |0  |0  |0 0|   |
+    |   |   |   |   |1 1|
+    |   |   |   |1 1|   |
+    |0  |   |1 1|   |   |
+    |   |1 1|1 1|1 1|1 1|
+    |1 1|   |   |   |   |
     ---------------------
     """
     def test_move_up_is_winner(self, get_random_location):
