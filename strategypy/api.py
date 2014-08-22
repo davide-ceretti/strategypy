@@ -11,6 +11,7 @@ class BaseBot(object):
             'move left',
             'move right',
             'move down',
+            None,
         ]
 
         self.__static_data__ = ctx
@@ -41,10 +42,12 @@ class BaseBot(object):
         action = self.action(ctx)
 
         if action not in self.__allowed_actions__:
-            if action is not None:
-                msg = 'Bot#%s executing not allowed action: %s' % (
-                    self.static_data['player_pk'], action)
-                logging.warning(msg)
+            msg = 'Bot#%s executing not allowed action: %s' % (
+                ctx['player_pk'], action)
+            logging.warning(msg)
+            return
+
+        if action is None:
             return
 
         verb, arg = action.split(' ')
