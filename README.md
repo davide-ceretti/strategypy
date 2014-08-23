@@ -51,7 +51,7 @@ General usage:
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
 
 This can be either be saved on a file so that it can be loaded later by a FE:
-* ```python strategypy/main.py killer prey prey```
+* ```python strategypy/main.py killer prey prey > example.json```
 
 or it can be piped it directly into a FE, for example:
 * ```python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py```
