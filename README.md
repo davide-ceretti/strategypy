@@ -21,8 +21,7 @@ Have a look at settings.py if you want to change some of the game basic settings
 Installation
 ------------
 
-System dependencies:
-* python2.7
+System dependencies: python2.7
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
 
@@ -39,12 +38,10 @@ To run an example game (output is json):
 To run a game with simple console-based front-end:
 * ```./play-console.sh```
 
-To run a game with a PyGame front-end:
-NOTE: Requires https://github.com/davide-ceretti/strategypy-pygame-client to be installed and it has python/system dependencies
+To run a game with a PyGame front-end (Requires https://github.com/davide-ceretti/strategypy-pygame-client to be installed and it has python/system dependencies):
 * ```./play-pygame.sh```
 
-To run a game with a Javascript front-end on Firefox:
-NOTE: Requires https://github.com/benqus/strategypy-ui and Firefox to be installed
+To run a game with a Javascript front-end on Firefox (Requires https://github.com/benqus/strategypy-ui and Firefox to be installed):
 * ```./play-firefox.sh```
 
 
@@ -54,7 +51,7 @@ General usage:
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
 
 This can be either be saved on a file so that it can be loaded later by a FE:
-* ```python strategypy/main.py killer prey prey```
+* ```python strategypy/main.py killer prey prey > example.json```
 
 or it can be piped it directly into a FE, for example:
 * ```python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py```
