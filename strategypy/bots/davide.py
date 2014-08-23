@@ -13,17 +13,24 @@ def max_from_dict(dictionary):
     return result
 
 
-def get_me_closer_to(my_position, their_position):
+def get_me_closer_to(ctx, my_position, their_position):
     my_x, my_y = my_position
     their_x, their_y = their_position
+    X, Y = ctx['grid_size']
+    X, Y = float(X), float(Y)
     dx = my_x - their_x
     dy = my_y - their_y
 
+    move_up = 1 - (Y - dy)/Y if dy > 0 else 0.0
+    move_down = 1 - (Y + dy)/Y if dy < 0 else 0.0
+    move_left = 1 - (X - dx)/X if dx > 0 else 0.0
+    move_right = 1 - (X + dx)/X if dx < 0 else 0.0
+
     result = {
-        'move up': float(abs(dx) <= abs(dy) and dy >= 0),
-        'move down': float(abs(dx) <= abs(dy) and dy < 0),
-        'move left': float(abs(dx) > abs(dy) and dx >= 0),
-        'move right': float(abs(dx) > abs(dy) and dx < 0),
+        'move up': move_up,
+        'move down': move_down,
+        'move left': move_left,
+        'move right': move_right,
         None: 0.0
     }
     return result
@@ -41,9 +48,9 @@ class Bot(BaseBot):
     rules = {
         'be_able_to_move': 100.0,
         'risk_of_dieing': 10.0,
-        'outnumber_isolated_enemies': 1.2,
+        'outnumber_isolated_enemies': 1.0,
         'closer_to_central_mass': 1.0,
-        'find_isolated_targets': 0.0,  # Unused
+        'find_isolated_targets': 1.0,
     }
 
     def action(self, ctx):
@@ -73,13 +80,16 @@ class Bot(BaseBot):
         result = {k: 1.0 for k in self.actions.iterkeys()}
         x, y = ctx['position']
         X, Y = ctx['grid_size']
-        if x == 0:
+        board = ctx['current_data']
+        occupied_cells = [v.values() for k, v in board.iteritems()][0]
+        occupied_cells.remove((x, y))
+        if x == 0 or (x-1, y) in occupied_cells:
             result['move left'] = 0.0
-        if x == X - 1:
+        if x == X - 1 or (x+1, y) in occupied_cells:
             result['move right'] = 0.0
-        if y == 0:
+        if y == 0 or (x, y-1) in occupied_cells:
             result['move up'] = 0.0
-        if y == Y - 1:
+        if y == Y - 1 or (x, y+1) in occupied_cells:
             result['move down'] = 0.0
         return result
 
@@ -94,7 +104,7 @@ class Bot(BaseBot):
             sum(y for _, y in allies)/n
         )
 
-        result = get_me_closer_to(my_position, avg_position)
+        result = get_me_closer_to(ctx, my_position, avg_position)
         return result
 
     def outnumber_isolated_enemies(self, ctx):
@@ -124,7 +134,7 @@ class Bot(BaseBot):
             sum(y for _, y in close_enemies)/n
         )
 
-        result = get_me_closer_to(my_position, avg_position)
+        result = get_me_closer_to(ctx, my_position, avg_position)
 
         if close_allies >= len(close_enemies):
             return result
@@ -145,16 +155,16 @@ class Bot(BaseBot):
         }
 
         target_position = max_from_dict(distances_from_avg)
-        result = get_me_closer_to(my_position, target_position)
+        result = get_me_closer_to(ctx, my_position, target_position)
 
         return result
 
     def risk_of_dieing(self, ctx):
-        # TODO: Take into consideration ally positions
         board = ctx['current_data']
         pk = ctx['player_pk']
         x, y = ctx['position']
         enemies = [v.values() for k, v in board.iteritems() if k != pk][0]
+        allies = board[pk].values()
 
         result = {}
         for k, v in self.actions.iteritems():
@@ -179,7 +189,17 @@ class Bot(BaseBot):
                 for each in enemies
                 if each in danger_values
             ]
+            allies_in_danger_values = [
+                each
+                for each in allies
+                if each in danger_values
+            ]
 
             number_of_dangerous_enemies = len(dangerous_enemies)
-            result[k] = 1.0 - (number_of_dangerous_enemies/20.0)
+            number_of_allies = len(allies_in_danger_values)
+            diff = number_of_allies - number_of_dangerous_enemies
+            if diff > 0:
+                result[k] = 1.0
+            else:
+                result[k] = 1.0 + (diff/len(danger_values))
         return result
