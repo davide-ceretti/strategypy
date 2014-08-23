@@ -2,4 +2,3 @@
 .coverage
 htmlcov/
 local_settings.py
-play.sh

@@ -21,16 +21,32 @@ Have a look at settings.py if you want to change some of the game basic settings
 Installation
 ------------
 
-* ```pip install -r requirements.txt```
+System dependencies:
+* python2.7
+
+* ```git clone https://github.com/davide-ceretti/strategypy.git```
 
 Usage
 -----
 
 To run all the tests:
+* ```pip install -r test-requirements.txt```
 * ```./run_tests.sh```
 
-To run an example game with basic bots and console FE:
-* ```./run_example.sh```
+To run an example game (output is json):
+* ```./play.sh```
+
+To run a game with simple console-based front-end:
+* ```./play-console.sh```
+
+To run a game with a PyGame front-end:
+NOTE: Requires https://github.com/davide-ceretti/strategypy-pygame-client to be installed and it has python/system dependencies
+* ```./play-pygame.sh```
+
+To run a game with a Javascript front-end:
+NOTE: Requires https://github.com/benqus/strategypy-ui to be installed
+* ```./play-javascript.sh```
+
 
 General usage:
 * ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
@@ -44,6 +60,7 @@ or it can be piped it directly into a FE, for example:
 * ```python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py```
 
 See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
+See https://github.com/benqus/strategypy-ui for a Javascript FE.
 
 
 TODO / Improvements
@@ -53,7 +70,7 @@ TODO / Improvements
 * Security (Disable os, HTTP etc..)
 * Anti-cheating (Isolate bots from what is not exposed by the API)
 * Numpy / Performance improvements
-* Performance tracking
+* Performance tracking/acceptance on build
 * Rework game rules and engine to make it more interesting
-* Build JS front-end
 * More and better unit tests
+* Package FE and their dpeendencies
