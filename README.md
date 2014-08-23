@@ -43,9 +43,9 @@ To run a game with a PyGame front-end:
 NOTE: Requires https://github.com/davide-ceretti/strategypy-pygame-client to be installed and it has python/system dependencies
 * ```./play-pygame.sh```
 
-To run a game with a Javascript front-end:
-NOTE: Requires https://github.com/benqus/strategypy-ui to be installed
-* ```./play-javascript.sh```
+To run a game with a Javascript front-end on Firefox:
+NOTE: Requires https://github.com/benqus/strategypy-ui and Firefox to be installed
+* ```./play-firefox.sh```
 
 
 General usage:
