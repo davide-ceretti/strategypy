@@ -21,8 +21,7 @@ Have a look at settings.py if you want to change some of the game basic settings
 Installation
 ------------
 
-System dependencies:
-* python2.7
+System dependencies: python2.7
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
 
