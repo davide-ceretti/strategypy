@@ -82,7 +82,10 @@ class Bot(BaseBot):
         X, Y = ctx['grid_size']
         board = ctx['current_data']
         occupied_cells = [v.values() for k, v in board.iteritems()][0]
-        occupied_cells.remove((x, y))
+        try:
+            occupied_cells.remove((x, y))
+        except ValueError:
+            pass
         if x == 0 or (x-1, y) in occupied_cells:
             result['move left'] = 0.0
         if x == X - 1 or (x+1, y) in occupied_cells:
