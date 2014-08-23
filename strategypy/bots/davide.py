@@ -1,4 +1,5 @@
 import random
+import operator
 
 from api import BaseBot
 
@@ -12,32 +13,54 @@ class Bot(BaseBot):
         None: (0, 0),
     }
 
-    def get_available_moves(self, ctx):
-        open_directions = self.actions.copy()
+    rules = {
+        'be_able_to_move': 0.1,
+        'risk_of_dieing': 0.01,
+        'closer_to_central_mass': 0.001,
+    }
+
+    def action(self, ctx):
+        rules_actions = {
+            rule: getattr(self, rule)(ctx)
+            for rule in self.rules.iterkeys()
+        }
+        weighted_actions = {
+            action: self._eval_weighted_action(action, rules_actions)
+            for action in self.actions
+        }
+
+        chosen = max(
+            weighted_actions.iteritems(),
+            key=operator.itemgetter(1)
+        )[0]
+        return chosen
+
+    # UTILS
+
+    def _eval_weighted_action(self, action, rules_actions):
+        value = sum(
+            v * rules_actions[k][action]
+            for k, v in self.rules.iteritems()
+        )
+        return value
+
+    # RULES
+
+    def be_able_to_move(self, ctx):
+        result = {k: 1.0 for k in self.actions.iterkeys()}
         x, y = ctx['position']
         X, Y = ctx['grid_size']
         if x == 0:
-            open_directions.pop('move left')
+            result['move left'] = 0.0
         if x == X - 1:
-            open_directions.pop('move right')
+            result['move right'] = 0.0
         if y == 0:
-            open_directions.pop('move up')
+            result['move up'] = 0.0
         if y == Y - 1:
-            open_directions.pop('move down')
-        return open_directions
+            result['move down'] = 0.0
+        return result
 
-    def action(self, ctx):
-        moves = self.get_available_moves(ctx).keys()
-        action_matrix = {
-            k: self.how_close_am_i_to_die_if_i_went(ctx, k)
-            for k in moves
-        }
-
-        min_value = action_matrix[min(action_matrix)]
-        keys = [k for k, v in action_matrix.iteritems() if v == min_value]
-        return self.get_best_direction(ctx, keys)
-
-    def get_best_direction(self, ctx, directions):
+    def closer_to_central_mass(self, ctx):
         board = ctx['current_data']
         pk = ctx['player_pk']
         x, y = ctx['position']
@@ -47,48 +70,46 @@ class Bot(BaseBot):
         avg_y = sum(y for _, y in allies)/n
         dx = x - avg_x
         dy = y - avg_y
-        if abs(dx) > abs(dy):
-            best = 'move left' if dx > 0 else 'move right'
-        else:
-            best = 'move up' if dy > 0 else 'move down'
-        if best in directions:
-            return best
-        else:
-            return random.choice(directions)
+        # TODO: Optimize
+        result = {
+            'move up': float(abs(dx) <= abs(dy) and dy >= 0),
+            'move down': float(abs(dx) <= abs(dy) and dy < 0),
+            'move left': float(abs(dx) > abs(dy) and dx >= 0),
+            'move right': float(abs(dx) > abs(dy) and dx < 0),
+            None: 0.0
+        }
+        return result
 
-    def how_close_am_i_to_die_if_i_went(self, ctx, direction):
+    def risk_of_dieing(self, ctx):
         board = ctx['current_data']
         pk = ctx['player_pk']
         x, y = ctx['position']
         enemies = [v.values() for k, v in board.iteritems() if k != pk][0]
-        """
-        0 is danger, 1 is current unit
-        (3, 4)
-        X X X X X X X
-        X X X X X X X
-        X X 0 0 0 X X
-        X 0 0 0 0 0 X
-        X 0 0 1 0 0 X
-        X 0 0 0 0 0 X
-        X X 0 0 0 X X
-        X X X X X X X
-        """
-        x_offset, y_offset = self.actions[direction]
 
-        x_initial = x - 2 + x_offset
-        x_final = x + 2 + x_offset
-        y_initial = y - 2 + y_offset
-        y_final = y + 2 + y_offset
-        danger_values = [
-            (p, q)
-            for p in xrange(x_initial, x_final + 1)
-            for q in xrange(y_initial, y_final + 1)
-        ]
-        danger_values.remove((x_initial, y_initial))  # Top left
-        danger_values.remove((x_final, y_initial))  # Top right
-        danger_values.remove((x_initial, y_final))  # Bottom left
-        danger_values.remove((x_final, y_final))  # Bottom right
+        result = {}
+        for k, v in self.actions.iteritems():
+            x_offset, y_offset = v
 
-        dangerous_enemies = [each for each in enemies if each in danger_values]
+            x_initial = x - 2 + x_offset
+            x_final = x + 2 + x_offset
+            y_initial = y - 2 + y_offset
+            y_final = y + 2 + y_offset
+            danger_values = [
+                (p, q)
+                for p in xrange(x_initial, x_final + 1)
+                for q in xrange(y_initial, y_final + 1)
+            ]
+            danger_values.remove((x_initial, y_initial))  # Top left
+            danger_values.remove((x_final, y_initial))  # Top right
+            danger_values.remove((x_initial, y_final))  # Bottom left
+            danger_values.remove((x_final, y_final))  # Bottom right
 
-        return len(dangerous_enemies)/float(20)
+            dangerous_enemies = [
+                each
+                for each in enemies
+                if each in danger_values
+            ]
+
+            number_of_dangerous_enemies = len(dangerous_enemies)
+            result[k] = 1.0 - (number_of_dangerous_enemies/20.0)
+        return result
