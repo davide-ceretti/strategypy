@@ -1,2 +1,2 @@
 [report]
-omit = *tests*,*bots*,*site-packages*,*settings*
+omit = *tests*,*bots*,*site-packages*,*settings*,*trainer*
