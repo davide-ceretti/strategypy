@@ -2,6 +2,10 @@ import json
 import itertools
 import operator
 import random
+import os.path
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from game import Game
 from bots.davide import Bot as DavideBot
@@ -74,12 +78,13 @@ def bruteforce_training():
     values += itertools.permutations([10, 5, 2, 1])
     values += itertools.permutations([10, 5, 1, 1])
     values += itertools.permutations([10, 1, 1, 1])
-    values += itertools.permutations([1, 1, 1, 1])
     values += itertools.permutations([2, 1, 1, 1])
-    values += itertools.permutations([2, 2, 1, 1])
     values += itertools.permutations([2, 2, 2, 1])
-    values += itertools.permutations([3, 3, 1, 1])
+    values += itertools.permutations([2, 2, 1, 1])
+    values += itertools.permutations([3, 3, 3, 1])
     values += itertools.permutations([3, 3, 2, 1])
+    values += itertools.permutations([3, 3, 1, 1])
+    values += itertools.permutations([1, 1, 1, 1])
 
     result = {
         value: play_games(value)
@@ -112,6 +117,7 @@ def genetic_algorythms_training():
         values.extend([k_one, k_two, son])
     return k_one, v_one
 
-print bruteforce_training()
-print genetic_algorythms_training()
-print random_training()
+if __name__ == '__main__':
+    print bruteforce_training()
+    print genetic_algorythms_training()
+    print random_training()
