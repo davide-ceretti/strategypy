@@ -45,12 +45,15 @@ class Bot(BaseBot):
         None: (0, 0),
     }
 
+    # Optimized for 1v1 vs Happines
+    # On (15, 15) grid with 10 units
+    # Using bruteforce_training
     rules = {
         'be_able_to_move': 100.0,
-        'risk_of_dieing': 10.0,
-        'outnumber_isolated_enemies': 1.0,
-        'closer_to_central_mass': 1.0,
-        'find_isolated_targets': 1.0,
+        'risk_of_dieing': 2,
+        'outnumber_isolated_enemies': 1,
+        'closer_to_central_mass': 3,
+        'find_isolated_targets': 3,
     }
 
     def action(self, ctx):

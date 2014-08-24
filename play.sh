@@ -1,1 +1,1 @@
-python strategypy/main.py davide prey prey prey
+python strategypy/main.py davide happiness
