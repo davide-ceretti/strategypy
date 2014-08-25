@@ -11,9 +11,9 @@ from game import Game
 from bots.davide import Bot as DavideBot
 import settings
 
-settings.GRID_SIZE = (15, 15)
+settings.GRID_SIZE = (40, 40)
 settings.UNITS = 10
-settings.MAX_TURNS = 75
+settings.MAX_TURNS = 100
 settings.RESPAWN = False
 settings.BORDER = "WALL"
 
@@ -43,7 +43,7 @@ def play_game(rules):
     return utility
 
 
-def play_games(rules, n=20):
+def play_games(rules, n=5):
     results = [play_game(rules) for _ in xrange(0, n)]
     avg = sum(results)/float(len(results))
     return avg
@@ -58,20 +58,21 @@ def max_from_dict(dictionary):
 
 
 def random_rules():
-    return tuple(random.random() * 2 for _ in xrange(0, 4))
+    return tuple(round(random.random() * 3, 2) for _ in xrange(0, 4))
 
 
 def make_son(rules_one, rules_two):
     son = list(
-        (a + b)/float(2)
+        round((a + b)/float(2), 2)
         for a, b in zip(rules_one, rules_two)
     )
     # Mutate son
     for each in son:
-        mutation = random.random() / 5
-        new_val = each - 0.1 + mutation
+        new_val = each + random.choice([-0.2, -0.1, 0, 0.2, 0.1])
         if new_val > 0:
             each += new_val
+        else:
+            each = 0
 
     return tuple(son)
 
@@ -80,47 +81,68 @@ def make_son(rules_one, rules_two):
 
 
 def bruteforce_training():
-    values = []
-    values += itertools.permutations([10, 10, 10, 1])
-    values += itertools.permutations([10, 10, 5, 1])
-    values += itertools.permutations([10, 10, 1, 1])
-    values += itertools.permutations([10, 5, 5, 1])
-    values += itertools.permutations([10, 5, 2, 1])
-    values += itertools.permutations([10, 5, 1, 1])
-    values += itertools.permutations([10, 1, 1, 1])
-    values += itertools.permutations([2, 1, 1, 1])
-    values += itertools.permutations([2, 2, 2, 1])
-    values += itertools.permutations([2, 2, 1, 1])
-    values += itertools.permutations([3, 3, 3, 1])
-    values += itertools.permutations([3, 3, 2, 1])
-    values += itertools.permutations([3, 3, 1, 1])
-    values += itertools.permutations([1, 1, 1, 1])
+    GAMES_TO_PLAY = 10
 
-    result = {
-        value: play_games(value)
-        for value in values
-    }
+    values = set()
+    values.update(set(itertools.permutations([10, 10, 10, 1])))
+    values.update(set(itertools.permutations([10, 10, 5, 1])))
+    values.update(set(itertools.permutations([10, 10, 1, 1])))
+    values.update(set(itertools.permutations([10, 5, 5, 1])))
+    values.update(set(itertools.permutations([10, 5, 2, 1])))
+    values.update(set(itertools.permutations([10, 5, 1, 1])))
+    values.update(set(itertools.permutations([10, 1, 1, 1])))
+    values.update(set(itertools.permutations([2, 1, 1, 1])))
+    values.update(set(itertools.permutations([2, 2, 2, 1])))
+    values.update(set(itertools.permutations([2, 2, 1, 1])))
+    values.update(set(itertools.permutations([3, 3, 3, 1])))
+    values.update(set(itertools.permutations([3, 3, 2, 1])))
+    values.update(set(itertools.permutations([3, 3, 1, 1])))
+    values.update(set(itertools.permutations([1, 1, 1, 1])))
+
+    n = len(values)
+    print 'BRUTEFORCE TRAINING - {} rules'.format(n)
+    result = {}
+    for i, value in enumerate(values):
+        result[value] = play_games(value, n=GAMES_TO_PLAY)
+        per_cent = (i*100)/float(n)
+        print '{:.1f}% - Played {} games with rule {}: {}'.format(
+            per_cent, GAMES_TO_PLAY, value, result[value])
     return max_from_dict(result)
 
 
 def random_training():
-    values = [random_rules() for _ in xrange(0, 50)]
-    result = {
-        value: play_games(value)
-        for value in values
-    }
+    GAMES_TO_PLAY = 10
+    values = [random_rules() for _ in xrange(0, 100)]
+
+    n = len(values)
+    print 'RANDOM TRAINING - {} rules'.format(n)
+    result = {}
+    for i, value in enumerate(values):
+        result[value] = play_games(value, n=GAMES_TO_PLAY)
+        per_cent = (i*100)/float(n)
+        print '{:.1f}% - Played {} games with rule {}: {}'.format(
+            per_cent, GAMES_TO_PLAY, value, result[value])
     return max_from_dict(result)
 
 
 def genetic_algorythms_training():
     AMOUNT_OF_SONS = 8
-    GENETIC_POOL = 40
+    GENETIC_POOL = 20
+    GAMES_TO_PLAY = 20
+    GENERATIONS = 10
+    print 'RANDOM TRAINING - {} rules, {} generations'.format(
+        GENETIC_POOL, GENERATIONS)
+    print
     values = [random_rules() for _ in xrange(0, GENETIC_POOL)]
-    for i, x in enumerate(xrange(0, 50)):
-        result = {
-            value: play_games(value)
-            for value in values
-        }
+    for j, x in enumerate(xrange(0, GENERATIONS)):
+        result = {}
+        print 'Start generation {}'.format(j)
+        for i, value in enumerate(values):
+            result[value] = play_games(value, n=GAMES_TO_PLAY)
+            per_cent =  \
+                (100*(j*GENETIC_POOL + i))/float(GENERATIONS * GENETIC_POOL)
+            print '{:.1f}% - Played {} games with rule {}: {}'.format(
+                per_cent, GAMES_TO_PLAY, value, result[value])
         k_one, v_one = max_from_dict(result)
         result.pop(k_one)
         k_two, v_two = max_from_dict(result)
@@ -131,7 +153,9 @@ def genetic_algorythms_training():
         ]
         values.extend([k_one, k_two])
         values.extend(sons)
-        print 'Best of {} generation: {} {} '.format(i, k_one, v_one)
+        print 'First best of generation {} is {} {} '.format(j, k_one, v_one)
+        print 'Second best of generation {} is {} {} '.format(j, k_two, v_two)
+        print
 
     return k_one, v_one
 
