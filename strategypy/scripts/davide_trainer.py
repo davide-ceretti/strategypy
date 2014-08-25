@@ -4,6 +4,7 @@ import operator
 import random
 import os.path
 import sys
+import argparse
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -160,6 +161,12 @@ def genetic_algorythms_training():
     return k_one, v_one
 
 if __name__ == '__main__':
-    print bruteforce_training()
-    print genetic_algorythms_training()
-    print random_training()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("trainer", choices=['bruteforce', 'genetic', 'random'])
+    funcs = {
+        'bruteforce': bruteforce_training,
+        'genetic': genetic_algorythms_training,
+        'random': random_training,
+    }
+    arguments = parser.parse_args()
+    print funcs[arguments.trainer]()
