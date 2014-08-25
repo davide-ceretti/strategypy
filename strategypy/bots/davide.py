@@ -47,13 +47,13 @@ class Bot(BaseBot):
 
     # Optimized for 1v1 vs Happines
     # On (15, 15) grid with 10 units
-    # Using bruteforce_training
+    # Using genetic_algorythms_training
     rules = {
         'be_able_to_move': 100.0,
-        'risk_of_dieing': 2,
-        'outnumber_isolated_enemies': 1,
-        'closer_to_central_mass': 3,
-        'find_isolated_targets': 3,
+        'risk_of_dieing': 0.73,
+        'outnumber_isolated_enemies': 0.11,
+        'closer_to_central_mass': 0.79,
+        'find_isolated_targets': 0.92,
     }
 
     def action(self, ctx):

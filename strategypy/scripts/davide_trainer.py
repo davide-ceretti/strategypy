@@ -35,12 +35,15 @@ def play_game(rules):
 
     davide_units = result['frames'][-1].get('0', [])
     is_davide_winner = result['winner'] == 0
+    turns = result['turns']
     utility = len(davide_units) * is_davide_winner
+    if utility > 0:
+        utility += 1 - (turns/float(settings.MAX_TURNS))
 
     return utility
 
 
-def play_games(rules, n=10):
+def play_games(rules, n=20):
     results = [play_game(rules) for _ in xrange(0, n)]
     avg = sum(results)/float(len(results))
     return avg
@@ -55,15 +58,22 @@ def max_from_dict(dictionary):
 
 
 def random_rules():
-    return tuple(random.random() * 5 for _ in xrange(0, 4))
+    return tuple(random.random() * 2 for _ in xrange(0, 4))
 
 
 def make_son(rules_one, rules_two):
-    son = tuple(
+    son = list(
         (a + b)/float(2)
         for a, b in zip(rules_one, rules_two)
     )
-    return son
+    # Mutate son
+    for each in son:
+        mutation = random.random() / 5
+        new_val = each - 0.1 + mutation
+        if new_val > 0:
+            each += new_val
+
+    return tuple(son)
 
 
 # TRAININGS
@@ -103,8 +113,10 @@ def random_training():
 
 
 def genetic_algorythms_training():
-    values = [random_rules() for _ in xrange(0, 10)]
-    for x in xrange(0, 5):
+    AMOUNT_OF_SONS = 8
+    GENETIC_POOL = 40
+    values = [random_rules() for _ in xrange(0, GENETIC_POOL)]
+    for i, x in enumerate(xrange(0, 50)):
         result = {
             value: play_games(value)
             for value in values
@@ -112,9 +124,15 @@ def genetic_algorythms_training():
         k_one, v_one = max_from_dict(result)
         result.pop(k_one)
         k_two, v_two = max_from_dict(result)
-        son = make_son(k_one, k_two)
-        values = [random_rules() for _ in xrange(0, 7)]
-        values.extend([k_one, k_two, son])
+        sons = [make_son(k_one, k_two) for _ in xrange(0, AMOUNT_OF_SONS)]
+        values = [
+            random_rules()
+            for _ in xrange(0, GENETIC_POOL - AMOUNT_OF_SONS)
+        ]
+        values.extend([k_one, k_two])
+        values.extend(sons)
+        print 'Best of {} generation: {} {} '.format(i, k_one, v_one)
+
     return k_one, v_one
 
 if __name__ == '__main__':
