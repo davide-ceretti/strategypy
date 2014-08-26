@@ -12,7 +12,7 @@ from game import Game
 from bots.davide import Bot as DavideBot
 import settings
 
-settings.GRID_SIZE = (40, 40)
+settings.GRID_SIZE = (30, 30)
 settings.UNITS = 10
 settings.MAX_TURNS = 100
 settings.RESPAWN = False
@@ -63,17 +63,17 @@ def random_rules():
 
 
 def make_son(rules_one, rules_two):
-    son = list(
-        round((a + b)/float(2), 2)
+    son = [
+        random.choice([a, b])
         for a, b in zip(rules_one, rules_two)
-    )
-    # Mutate son
-    for each in son:
-        new_val = each + random.choice([-0.2, -0.1, 0, 0.2, 0.1])
-        if new_val > 0:
-            each += new_val
-        else:
-            each = 0
+    ]
+
+    # Mutation
+    if random.random() < 0.3:
+        random_id = random.randint(0, 3)
+        val = son[random_id]
+        new_val = val + random.choice([-0.2, -0.1, 0, 0.2, 0.1])
+        son[random_id] = round(new_val, 2) if new_val > 0 else 0
 
     return tuple(son)
 
@@ -127,10 +127,10 @@ def random_training():
 
 
 def genetic_algorythms_training():
-    AMOUNT_OF_SONS = 8
+    AMOUNT_OF_SONS = 4
     GENETIC_POOL = 20
-    GAMES_TO_PLAY = 20
-    GENERATIONS = 10
+    GAMES_TO_PLAY = 25
+    GENERATIONS = 100
     print 'RANDOM TRAINING - {} rules, {} generations'.format(
         GENETIC_POOL, GENERATIONS)
     print
@@ -144,15 +144,21 @@ def genetic_algorythms_training():
                 (100*(j*GENETIC_POOL + i))/float(GENERATIONS * GENETIC_POOL)
             print '{:.1f}% - Played {} games with rule {}: {}'.format(
                 per_cent, GAMES_TO_PLAY, value, result[value])
-        k_one, v_one = max_from_dict(result)
-        result.pop(k_one)
-        k_two, v_two = max_from_dict(result)
+
+        best = []
+        for i in xrange(0, 4):
+            rule = max_from_dict(result)
+            result.pop(rule[0])
+            best.append(rule)
+
+        k_one, v_one = best[0]
+        k_two, v_two = best[1]
         sons = [make_son(k_one, k_two) for _ in xrange(0, AMOUNT_OF_SONS)]
         values = [
             random_rules()
             for _ in xrange(0, GENETIC_POOL - AMOUNT_OF_SONS)
         ]
-        values.extend([k_one, k_two])
+        values.extend([x for x, __ in best])
         values.extend(sons)
         print 'First best of generation {} is {} {} '.format(j, k_one, v_one)
         print 'Second best of generation {} is {} {} '.format(j, k_two, v_two)
