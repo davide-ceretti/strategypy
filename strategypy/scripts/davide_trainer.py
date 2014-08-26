@@ -36,10 +36,7 @@ def play_game(rules):
 
     davide_units = result['frames'][-1].get('0', [])
     is_davide_winner = result['winner'] == 0
-    turns = result['turns']
     utility = len(davide_units) * is_davide_winner
-    if utility > 0:
-        utility += 1 - (turns/float(settings.MAX_TURNS))
 
     return utility
 
@@ -129,7 +126,7 @@ def random_training():
 def genetic_algorythms_training():
     AMOUNT_OF_SONS = 4
     GENETIC_POOL = 20
-    GAMES_TO_PLAY = 25
+    GAMES_TO_PLAY = 100
     GENERATIONS = 100
     print 'RANDOM TRAINING - {} rules, {} generations'.format(
         GENETIC_POOL, GENERATIONS)
