@@ -36,14 +36,16 @@ To run an example game (output is json):
 * ```./play.sh```
 
 To run a game with simple console-based front-end:
-* ```./play-console.sh```
+* ```./play-simple.sh```
 
-To run a game with a PyGame front-end (Requires https://github.com/davide-ceretti/strategypy-pygame-client to be installed and it has python/system dependencies):
+To run a game with a PyGame front-end (Requires https://github.com/davide-ceretti/strategypy-pygame-client and its dependencies):
 * ```./play-pygame.sh```
 
-To run a game with a Javascript front-end on Firefox (Requires https://github.com/benqus/strategypy-ui and Firefox to be installed):
+To run a game with a Javascript front-end on Firefox (Requires https://github.com/benqus/strategypy-ui, its dependencies and Firefox to be installed):
 * ```./play-firefox.sh```
 
+To run a game with a console front-end (Requires https://github.com/mrfuxi/strategypy-consoleui):
+* ```./play-console.sh```
 
 General usage:
 * ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
@@ -58,6 +60,7 @@ or it can be piped it directly into a FE, for example:
 
 See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
 See https://github.com/benqus/strategypy-ui for a Javascript FE.
+See https://github.com/mrfuxi/strategypy-consoleui for a Console FE.
 
 
 TODO / Improvements
