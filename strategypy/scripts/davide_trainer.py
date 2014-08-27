@@ -56,7 +56,7 @@ def max_from_dict(dictionary):
 
 
 def random_rules():
-    return tuple(round(random.random() * 3, 2) for _ in xrange(0, 4))
+    return tuple(round(random.random(), 2) for _ in xrange(0, 4))
 
 
 def make_son(rules_one, rules_two):
