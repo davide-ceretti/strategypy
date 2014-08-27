@@ -66,13 +66,35 @@ def make_son(rules_one, rules_two):
     ]
 
     # Mutation
-    if random.random() < 0.3:
+    if random.random() < 0.1:
         random_id = random.randint(0, 3)
         val = son[random_id]
-        new_val = val + random.choice([-0.2, -0.1, 0, 0.2, 0.1])
-        son[random_id] = round(new_val, 2) if new_val > 0 else 0
+        new_val = val + random.uniform(-0.2, 0.2)
+        if new_val < 0:
+            new_val = 0
+        elif new_val > 1:
+            new_val = 1
+        son[random_id] = round(new_val, 2)
 
     return tuple(son)
+
+
+def weighted_random_parent(parents_list):
+    # Square weights
+    weights = [x**2 for _, x in parents_list]
+    rnd = random.random() * sum(weights)
+    for rule, value in parents_list:
+        rnd -= value ** 2
+        if rnd < 0:
+            return rule, value
+
+
+def random_parents(parents_list):
+    parents = parents_list[:]
+    first = weighted_random_parent(parents)
+    parents.remove(first)
+    second = weighted_random_parent(parents)
+    return first[0], second[0]
 
 
 # TRAININGS
@@ -123,16 +145,18 @@ def random_training():
     return max_from_dict(result)
 
 
-def genetic_algorythms_training():
-    AMOUNT_OF_SONS = 4
-    GENETIC_POOL = 20
-    GAMES_TO_PLAY = 100
-    GENERATIONS = 100
+def genetic_algorithms_training():
+    SONS = 10
+    PARENTS = 20
+    RANDOM = 20
+    GENETIC_POOL = SONS + PARENTS + RANDOM
+    GAMES_TO_PLAY = 300
+    GENERATIONS = 50
     print 'RANDOM TRAINING - {} rules, {} generations'.format(
         GENETIC_POOL, GENERATIONS)
     print
     values = [random_rules() for _ in xrange(0, GENETIC_POOL)]
-    for j, x in enumerate(xrange(0, GENERATIONS)):
+    for j in xrange(0, GENERATIONS):
         result = {}
         print 'Start generation {}'.format(j)
         for i, value in enumerate(values):
@@ -142,33 +166,36 @@ def genetic_algorythms_training():
             print '{:.1f}% - Played {} games with rule {}: {}'.format(
                 per_cent, GAMES_TO_PLAY, value, result[value])
 
-        best = []
-        for i in xrange(0, 4):
+        parents = []
+        for i in xrange(0, PARENTS):
             rule = max_from_dict(result)
             result.pop(rule[0])
-            best.append(rule)
-
-        k_one, v_one = best[0]
-        k_two, v_two = best[1]
-        sons = [make_son(k_one, k_two) for _ in xrange(0, AMOUNT_OF_SONS)]
-        values = [
-            random_rules()
-            for _ in xrange(0, GENETIC_POOL - AMOUNT_OF_SONS)
-        ]
-        values.extend([x for x, __ in best])
-        values.extend(sons)
-        print 'First best of generation {} is {} {} '.format(j, k_one, v_one)
-        print 'Second best of generation {} is {} {} '.format(j, k_two, v_two)
+            parents.append(rule)
+        avg = round(sum(x for __, x in parents)/PARENTS, 2)
+        print 'Average of best {} rules for generation {} is: {}'.format(
+            PARENTS, j, avg)
         print
 
-    return k_one, v_one
+        sons = [
+            make_son(*random_parents(parents))
+            for _ in xrange(0, SONS)
+        ]
+
+        values = [
+            random_rules()
+            for _ in xrange(0, RANDOM)
+        ]
+        values.extend([x for x, __ in parents])
+        values.extend(sons)
+
+    return parents[0]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("trainer", choices=['bruteforce', 'genetic', 'random'])
     funcs = {
         'bruteforce': bruteforce_training,
-        'genetic': genetic_algorythms_training,
+        'genetic': genetic_algorithms_training,
         'random': random_training,
     }
     arguments = parser.parse_args()
