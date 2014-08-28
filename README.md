@@ -21,8 +21,7 @@ Have a look at settings.py if you want to change some of the game basic settings
 Demo
 ----
 
-(Javascript Frontend)
-http://benqus.github.io/strategypy-ui/
+Javascript Frontend: http://benqus.github.io/strategypy-ui/
 
 Installation
 ------------
