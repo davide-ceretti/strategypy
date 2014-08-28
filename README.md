@@ -30,12 +30,8 @@ System dependencies: python2.7
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
 
-Usage
------
-
-To run all the tests:
-* ```pip install -r test-requirements.txt```
-* ```./run_tests.sh```
+Quickstart
+----------
 
 To run an example game (output is json):
 * ```./play.sh```
@@ -52,7 +48,9 @@ To run a game with a Javascript front-end on Firefox (Requires https://github.co
 To run a game with a console front-end (Requires https://github.com/mrfuxi/strategypy-consoleui):
 * ```./play-console.sh```
 
-General usage:
+General usage
+-------------
+
 * ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
 
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
@@ -67,15 +65,19 @@ See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
 See https://github.com/benqus/strategypy-ui for a Javascript FE.
 See https://github.com/mrfuxi/strategypy-consoleui for a Console FE.
 
+To run all the tests:
+* ```pip install -r test-requirements.txt```
+* ```./run_tests.sh```
+
 
 TODO / Improvements
 -------------------
 
-* API for Bots
+* Better API for Bots
 * Security (Disable os, HTTP etc..)
 * Anti-cheating (Isolate bots from what is not exposed by the API)
 * Numpy / Performance improvements
 * Performance tracking/acceptance on build
 * Rework game rules and engine to make it more interesting
 * More and better unit tests
-* Package FE and their dpeendencies
+* Run this on a remote server
