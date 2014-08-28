@@ -18,6 +18,12 @@ A cell is killed if in the 9-cells subgrid centered on itself the number of the 
 
 Have a look at settings.py if you want to change some of the game basic settings.
 
+Demo
+----
+
+(Javascript Frontend)
+http://benqus.github.io/strategypy-ui/
+
 Installation
 ------------
 
