@@ -1,4 +1,5 @@
 import operator
+import random
 
 from api import BaseBot
 
@@ -6,8 +7,10 @@ from api import BaseBot
 # Utilities
 
 def max_from_dict(dictionary):
+    items = dictionary.items()
+    random.shuffle(items)
     result = max(
-        dictionary.iteritems(),
+        items,
         key=operator.itemgetter(1)
     )[0]
     return result
@@ -46,7 +49,7 @@ class Bot(BaseBot):
     }
 
     # Optimized for 1v1 vs Happines
-    # On (30, 30) grid with 30 units
+    # On (30, 30) grid with 10 units
     # Using genetic_algorythms_training
     # (0.93, 0.57, 0.51, 0.08)
     rules = {
@@ -191,6 +194,12 @@ class Bot(BaseBot):
             danger_values.remove((x_initial, y_final))  # Bottom left
             danger_values.remove((x_final, y_final))  # Bottom right
 
+            inner_values = [
+                (p, q)
+                for p in xrange(x_initial + 1, x_final)
+                for q in xrange(y_initial + 1, y_final)
+            ]
+
             dangerous_enemies = [
                 each
                 for each in enemies
@@ -199,7 +208,7 @@ class Bot(BaseBot):
             allies_in_danger_values = [
                 each
                 for each in allies
-                if each in danger_values
+                if each in inner_values
             ]
 
             number_of_dangerous_enemies = len(dangerous_enemies)
