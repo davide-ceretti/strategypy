@@ -18,6 +18,14 @@ settings.MAX_TURNS = 100
 settings.RESPAWN = False
 settings.BORDER = "WALL"
 
+_ORIGINAL_RULES = DavideBot.rules
+ORIGINAL_RULES = [
+    _ORIGINAL_RULES['risk_of_dieing'],
+    _ORIGINAL_RULES['outnumber_isolated_enemies'],
+    _ORIGINAL_RULES['closer_to_central_mass'],
+    _ORIGINAL_RULES['find_isolated_targets'],
+]
+
 
 def play_game(rules):
     a, b, c, d = rules
@@ -98,6 +106,19 @@ def random_parents(parents_list):
 
 
 # TRAININGS
+
+def custom_training(rule=None):
+    GAMES_TO_PLAY = 50
+
+    if rule is None:
+        rule = ORIGINAL_RULES
+
+    result = play_games(rule, n=GAMES_TO_PLAY)
+
+    print 'Played {} games with rule {}: {}'.format(
+        GAMES_TO_PLAY, rule, result)
+
+    return rule
 
 
 def bruteforce_training():
@@ -192,11 +213,15 @@ def genetic_algorithms_training():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("trainer", choices=['bruteforce', 'genetic', 'random'])
+    parser.add_argument(
+        "trainer",
+        choices=['bruteforce', 'genetic', 'random', 'custom']
+    )
     funcs = {
         'bruteforce': bruteforce_training,
         'genetic': genetic_algorithms_training,
         'random': random_training,
+        'custom': custom_training,
     }
     arguments = parser.parse_args()
     print funcs[arguments.trainer]()
