@@ -1,5 +1,6 @@
 import operator
 import random
+import itertools
 
 from api import BaseBot
 
@@ -40,6 +41,8 @@ def get_me_closer_to(ctx, my_position, their_position):
 
 
 class Bot(BaseBot):
+    danger_values_cache = {}  # Same address for all instances
+
     actions = {
         'move up': (0, -1),
         'move right': (1, 0),
@@ -173,8 +176,8 @@ class Bot(BaseBot):
         board = ctx['current_data']
         pk = ctx['player_pk']
         x, y = ctx['position']
-        enemies = [v.values() for k, v in board.iteritems() if k != pk][0]
-        allies = board[pk].values()
+        enemies = set([v.values() for k, v in board.iteritems() if k != pk][0])
+        allies = set(board[pk].values())
 
         result = {}
         for k, v in self.actions.iteritems():
@@ -184,32 +187,24 @@ class Bot(BaseBot):
             x_final = x + 2 + x_offset
             y_initial = y - 2 + y_offset
             y_final = y + 2 + y_offset
-            danger_values = [
-                (p, q)
-                for p in xrange(x_initial, x_final + 1)
-                for q in xrange(y_initial, y_final + 1)
-            ]
-            danger_values.remove((x_initial, y_initial))  # Top left
-            danger_values.remove((x_final, y_initial))  # Top right
-            danger_values.remove((x_initial, y_final))  # Bottom left
-            danger_values.remove((x_final, y_final))  # Bottom right
 
-            inner_values = [
-                (p, q)
-                for p in xrange(x_initial + 1, x_final)
-                for q in xrange(y_initial + 1, y_final)
-            ]
+            key = (x_initial, y_initial)
+            if key not in self.danger_values_cache:
+                danger_values = set(itertools.product(
+                    xrange(x_initial, x_final + 1),
+                    xrange(y_initial, y_final + 1),
+                ))
+                self.danger_values_cache[key] = danger_values
+            else:
+                danger_values = self.danger_values_cache[key]
 
-            dangerous_enemies = [
-                each
-                for each in enemies
-                if each in danger_values
-            ]
-            allies_in_danger_values = [
-                each
-                for each in allies
-                if each in inner_values
-            ]
+            danger_values.discard((x_initial, y_initial))  # Top left
+            danger_values.discard((x_final, y_initial))  # Top right
+            danger_values.discard((x_initial, y_final))  # Bottom left
+            danger_values.discard((x_final, y_final))  # Bottom right
+
+            dangerous_enemies = enemies & danger_values
+            allies_in_danger_values = allies & danger_values
 
             number_of_dangerous_enemies = len(dangerous_enemies)
             number_of_allies = len(allies_in_danger_values)
