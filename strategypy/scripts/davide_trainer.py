@@ -108,7 +108,7 @@ def random_parents(parents_list):
 # TRAININGS
 
 def custom_training(rule=None):
-    GAMES_TO_PLAY = 50
+    GAMES_TO_PLAY = 200
 
     if rule is None:
         rule = ORIGINAL_RULES

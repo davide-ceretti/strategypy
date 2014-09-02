@@ -41,7 +41,8 @@ def get_me_closer_to(ctx, my_position, their_position):
 
 
 class Bot(BaseBot):
-    danger_values_cache = {}  # Same address for all instances
+    danger_positions_cache = {}
+    close_positions_cache = {}
 
     actions = {
         'move up': (0, -1),
@@ -83,6 +84,36 @@ class Bot(BaseBot):
             for k, v in self.rules.iteritems()
         )
         return value
+
+    def get_danger_positions(self, initial, final):
+        x_initial, y_initial = initial
+        x_final, y_final = final
+        if initial not in self.danger_positions_cache:
+            danger_positions = set(itertools.product(
+                xrange(x_initial, x_final + 1),
+                xrange(y_initial, y_final + 1),
+            ))
+            danger_positions.discard((x_initial, y_initial))  # Top left
+            danger_positions.discard((x_final, y_initial))  # Top right
+            danger_positions.discard((x_initial, y_final))  # Bottom left
+            danger_positions.discard((x_final, y_final))  # Bottom right
+            self.danger_positions_cache[initial] = danger_positions
+        else:
+            danger_positions = self.danger_positions_cache[initial]
+        return danger_positions
+
+    def get_close_positions(self, initial, final):
+        x_initial, y_initial = initial
+        x_final, y_final = final
+        if initial not in self.close_positions_cache:
+            close_positions = set(itertools.product(
+                xrange(x_initial + 1, x_final),
+                xrange(y_initial + 1, y_final),
+            ))
+            self.close_positions_cache[initial] = close_positions
+        else:
+            close_positions = self.close_positions_cache[initial]
+        return close_positions
 
     # RULES
 
@@ -188,29 +219,17 @@ class Bot(BaseBot):
             y_initial = y - 2 + y_offset
             y_final = y + 2 + y_offset
 
-            key = (x_initial, y_initial)
-            if key not in self.danger_values_cache:
-                danger_values = set(itertools.product(
-                    xrange(x_initial, x_final + 1),
-                    xrange(y_initial, y_final + 1),
-                ))
-                self.danger_values_cache[key] = danger_values
-            else:
-                danger_values = self.danger_values_cache[key]
+            initial = (x_initial, y_initial)
+            final = (x_final, y_final)
+            danger_positions = self.get_danger_positions(initial, final)
+            close_positions = self.get_close_positions(initial, final)
 
-            danger_values.discard((x_initial, y_initial))  # Top left
-            danger_values.discard((x_final, y_initial))  # Top right
-            danger_values.discard((x_initial, y_final))  # Bottom left
-            danger_values.discard((x_final, y_final))  # Bottom right
+            close_enemies = enemies & danger_positions
+            close_allies = allies & close_positions
 
-            dangerous_enemies = enemies & danger_values
-            allies_in_danger_values = allies & danger_values
-
-            number_of_dangerous_enemies = len(dangerous_enemies)
-            number_of_allies = len(allies_in_danger_values)
-            diff = number_of_allies - number_of_dangerous_enemies
+            diff = len(close_allies) - len(close_enemies)
             if diff > 0:
                 result[k] = 1.0
             else:
-                result[k] = 1.0 + (diff/len(danger_values))
+                result[k] = 1.0 + (diff/len(danger_positions))
         return result
