@@ -81,3 +81,4 @@ TODO / Improvements
 * Rework game rules and engine to make it more interesting
 * More and better unit tests
 * Run this on a remote server
+* Load bots from GitHub instead of from bots directory
