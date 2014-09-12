@@ -4,6 +4,7 @@ import json
 import bots
 import settings
 from components import Player
+from api import make_socket_bot
 
 
 class Game(object):
@@ -40,9 +41,20 @@ class Game(object):
         Create bot action functions by getting the name of the
         package/module from the args
         """
+        external_bots = []
         for arg in self.args:
-            __import__('bots.{}'.format(arg))
-        self.bots = [getattr(bots, arg).Bot for arg in self.args]
+            try:
+                __import__('bots.{}'.format(arg))
+            except ImportError:
+                external_bots.append(arg)
+        internal_bots = [
+            getattr(bots, arg).Bot for arg in self.args
+            if arg not in external_bots
+        ]
+        external_bots = [
+            make_socket_bot(arg) for arg in external_bots
+        ]
+        self.bots = internal_bots + external_bots
 
     def snapshot_data(self):
         snapshot = self.current_data()
