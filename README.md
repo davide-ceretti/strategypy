@@ -4,7 +4,9 @@
 strategypy
 ----------
 
-The idea is to create a framework so that people can implement their own bot for a simple strategy game and compete versus each other. The project is still in development, but if you checkout everything it is supposed to work just fine.
+A game played by developersframework so that people can implement their own bot for a simple strategy game and compete versus each other.
+
+The project is still in development, but if you checkout everything and follow this README it is supposed to work just fine.
 
 Pull requests are welcomed, expecially if you want to submit your own bot. Bear in mind the the BaseBot API is not final yet and it might change quite often.
 
@@ -29,6 +31,7 @@ Installation
 System dependencies: python2.7
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
+* ```pip install -r requirements.txt
 
 Quickstart
 ----------
@@ -55,7 +58,9 @@ General usage
 
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
 
-This can be either be saved on a file so that it can be loaded later by a FE:
+The name of the bot must be a name of a python module in /bots/. It currently supports a URL of a web service that returns moves, but that is very experimental.
+
+This JSON result can be saved on a file so that it can be loaded later by a FE:
 * ```python strategypy/main.py killer prey prey > example.json```
 
 or it can be piped it directly into a FE, for example:
@@ -64,6 +69,9 @@ or it can be piped it directly into a FE, for example:
 See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
 See https://github.com/benqus/strategypy-ui for a Javascript FE.
 See https://github.com/mrfuxi/strategypy-consoleui for a Console FE.
+
+Tests
+-----
 
 To run all the tests:
 * ```pip install -r test-requirements.txt```
@@ -74,10 +82,9 @@ TODO / Improvements
 -------------------
 
 * Better API for Bots
-* Security (Disable os, HTTP etc..)
-* Anti-cheating (Isolate bots from what is not exposed by the API)
+* Security in local mode
+* Anti-cheating in local mode
 * Numpy / Performance improvements
 * Performance tracking/acceptance on build
 * Rework game rules and engine to make it more interesting
 * More and better unit tests
-* Run this on a remote server

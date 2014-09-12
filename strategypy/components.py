@@ -20,7 +20,11 @@ class Player(object):
         Returns the name of the module we imported
         bot_class from
         """
-        _, module_name = self.bot_class.__module__.split('.')
+        try:
+            _, module_name = self.bot_class.__module__.split('.')
+        except ValueError:
+            module_name = self.bot_class.url
+
         return module_name
 
 
