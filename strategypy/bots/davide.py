@@ -2,8 +2,6 @@ import operator
 import random
 import itertools
 
-from api import BaseBot
-
 
 # Utilities
 
@@ -40,7 +38,7 @@ def get_me_closer_to(ctx, my_position, their_position):
     return result
 
 
-class Bot(BaseBot):
+class Bot():
     danger_positions_cache = {}
     close_positions_cache = {}
 
@@ -233,3 +231,9 @@ class Bot(BaseBot):
             else:
                 result[k] = 1.0 + (diff/len(danger_positions))
         return result
+
+bot = Bot()
+
+
+def action(ctx):
+    return bot.action(ctx)

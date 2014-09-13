@@ -78,6 +78,45 @@ To run all the tests:
 * ```./run_tests.sh```
 
 
+BOT API
+-------
+
+There are currently two ways to create a BOT.
+
+The first and simplest one is to create a python file (e.g. mybot.py) in the bots directory. The python file must have a function called action.
+
+The function "action" takes one argument, the context of the game and returns one of the five possible moves: 'move up', 'move left', 'move right', 'move down', None.
+
+Example:
+```
+def action(ctx):
+    return 'move down'
+```
+
+Then you can play a game by running:
+```python strategypy/main.py mybot <<name_of_bot_two> ...```
+
+The second way (and experimental) to create a bot is by creating a web service that uses sockets. See https://github.com/davide-ceretti/strategypy-flask-bot-template as an example of a docker container running a flask service that uses sockets.
+
+The game can then be played by running:
+```python strategypy/main.py <url_of_my_service> <<name_of_bot_two> ...```
+
+For example:
+```python strategypy/main.py strategypy-bot-example-davide-ceretti.delta.tutum.io:49158 static```
+
+The context given to the action function represents the state of the game when action is required for one of your units. It is a dictionary with the following keys:
+
+```
+(int) player_pk
+(int) pk
+(bool) respawn
+(int, int) grid_size
+(int, int) position
+(list) has_killed
+(list) was_killed_by
+(dict) current_data
+```
+
 TODO / Improvements
 -------------------
 

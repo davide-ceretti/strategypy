@@ -3,6 +3,8 @@ import json
 
 from websocket import create_connection
 
+import bots
+
 
 class BaseBot(object):
     """
@@ -63,6 +65,7 @@ def make_socket_bot(arg):
 
     class SocketBot(BaseBot):
         url = arg
+        name = arg
         ws = WS
 
         def action(self, ctx):
@@ -71,3 +74,16 @@ def make_socket_bot(arg):
             return result
 
     return SocketBot
+
+
+def make_local_bot(arg):
+    __import__('bots.{}'.format(arg))
+    bot_module = getattr(bots, arg)
+
+    class LocalBot(BaseBot):
+        name = bot_module.__name__.split('.')[-1]
+
+        def action(self, ctx):
+            return bot_module.action(ctx)
+
+    return LocalBot

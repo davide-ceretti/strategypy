@@ -15,18 +15,6 @@ class Player(object):
         self.has_killed = {}
         self.was_killed_by = {}
 
-    def get_bot_class_module_name(self):
-        """
-        Returns the name of the module we imported
-        bot_class from
-        """
-        try:
-            _, module_name = self.bot_class.__module__.split('.')
-        except ValueError:
-            module_name = self.bot_class.url
-
-        return module_name
-
 
 class Unit(object):
     """

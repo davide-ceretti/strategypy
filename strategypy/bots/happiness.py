@@ -2,8 +2,6 @@ import random
 import sys
 from copy import deepcopy
 
-from api import BaseBot
-
 from happines_base import Bot as HappinessBaseBot
 
 
@@ -23,10 +21,10 @@ from happines_base import Bot as HappinessBaseBot
 
 
 class Bot(HappinessBaseBot):
-    
+
 
     def calc_happiness(self, friend_dist, enemy_dist):
-        
+
         happiness = 0. #+ random.random()/100.
 
         # occupied cells are unhappy
@@ -46,5 +44,11 @@ class Bot(HappinessBaseBot):
             max_per_shell = 4 * distance
             shell_occupancy = (enemy_dist[distance] * 1. / max_per_shell)
             happiness += 0.5 * min(shell_occupancy, 0.74) / distance
-        
+
         return happiness
+
+bot = Bot()
+
+
+def action(ctx):
+    return bot.action(ctx)

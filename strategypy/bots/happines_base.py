@@ -2,12 +2,9 @@ import random
 import sys
 from copy import deepcopy
 
-from api import BaseBot
 
+class Bot():
 
-
-class Bot(BaseBot):
-    
     MAX_DIST = 100
 
     distance_template = {}
@@ -36,17 +33,17 @@ class Bot(BaseBot):
 
         distances = deepcopy(self.distance_template)
         for other_player_pk, units in current_frame.items():
-            
+
             if other_player_pk == player_pk:
                 bot_type = 'friends'
             else:
                 bot_type = 'enemies'
 
             for unit_pk, (ox, oy) in units.items():
-                
+
                 for direction, (dx, dy) in self.directions.items():
                     dist = abs((x +  dx) - ox) + abs((y + dy) - oy)
-                    
+
                     if dist >= self.MAX_DIST:
                         continue
 
@@ -58,17 +55,17 @@ class Bot(BaseBot):
         raise NotImplementedError
 
     def _calc_happiness(self, directions):
-        
+
         res = []
 
         for direction in directions:
             happiness = self.calc_happiness(directions[direction]['friends'], directions[direction]['enemies'])
             res.append((happiness, direction))
-  
+
         max_hap = max(res)[0]
 
         return random.choice([d for h,d in res if h == max_hap])
-            
+
         return happiest[0]
 
 

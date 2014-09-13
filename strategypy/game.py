@@ -1,10 +1,10 @@
 from random import shuffle
 import json
+import glob
 
-import bots
 import settings
 from components import Player
-from api import make_socket_bot
+from api import make_socket_bot, make_local_bot
 
 
 class Game(object):
@@ -42,18 +42,18 @@ class Game(object):
         package/module from the args
         """
         external_bots = []
-        for arg in self.args:
-            try:
-                __import__('bots.{}'.format(arg))
-            except ImportError:
-                external_bots.append(arg)
-        internal_bots = [
-            getattr(bots, arg).Bot for arg in self.args
-            if arg not in external_bots
+        all_internal_bots = glob.glob('strategypy/bots/*.py')
+        all_internal_bots = [
+            x.split('/')[2][:-3]
+            for x in all_internal_bots
         ]
-        external_bots = [
-            make_socket_bot(arg) for arg in external_bots
-        ]
+
+        internal_bots = [x for x in self.args if x in all_internal_bots]
+        external_bots = [x for x in self.args if x not in all_internal_bots]
+
+        internal_bots = map(make_local_bot, internal_bots)
+        external_bots = map(make_socket_bot, external_bots)
+
         self.bots = internal_bots + external_bots
 
     def snapshot_data(self):
@@ -70,19 +70,19 @@ class Game(object):
 
     def build_json_data(self):
         players = {
-            player.pk: player.get_bot_class_module_name()
+            player.pk: player.bot_class.name
             for player in self.players
         }
 
         all_players = {
             player.pk: {
-                'name': player.get_bot_class_module_name(),
+                'name': player.bot_class.name,
                 'has_killed': {
-                    killed.get_bot_class_module_name(): num_times
+                    killed.bot_class.name: num_times
                     for killed, num_times in player.has_killed.items()
                 },
                 'was_killed_by': {
-                    killed.get_bot_class_module_name(): num_times
+                    killed.bot_class.name: num_times
                     for killed, num_times in player.was_killed_by.items()
                 },
             }

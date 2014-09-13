@@ -1,6 +1,2 @@
-from api import BaseBot
-
-
-class Bot(BaseBot):
-    def action(self, ctx):
-        return 'move left'
+def action(ctx):
+    return 'move left'

@@ -1,6 +1,2 @@
-from api import BaseBot
-
-
-class Bot(BaseBot):
-    def action(self, ctx):
-        return
+def action(ctx):
+    return
