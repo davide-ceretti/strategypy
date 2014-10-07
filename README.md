@@ -31,7 +31,7 @@ Installation
 System dependencies: python2.7
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
-* ```pip install -r requirements.txt
+* ```pip install -r requirements.txt```
 
 Quickstart
 ----------
