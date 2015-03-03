@@ -9,9 +9,9 @@ import itertools
 
 from mock import patch
 
-from game import Game
-from components import Unit
-import settings
+from strategypy.game import Game
+from strategypy.components import Unit
+from strategypy import settings
 
 
 def play_game(*args):
