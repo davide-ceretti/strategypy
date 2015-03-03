@@ -1,10 +1,9 @@
 [![Alt text](https://api.travis-ci.org/davide-ceretti/strategypy.svg?branch=master)](https://travis-ci.org/davide-ceretti/strategypy)
-[![Alt text](http://coveralls.io/repos/davide-ceretti/strategypy/badge.png?branch=master)](https://coveralls.io/r/davide-ceretti/strategypy)
 
 strategypy
 ----------
 
-A game played by developersframework so that people can implement their own bot for a simple strategy game and compete versus each other.
+A simple strategy game played by Python bots.
 
 The project is still in development, but if you checkout everything and follow this README it is supposed to work just fine.
 
@@ -31,7 +30,7 @@ Installation
 System dependencies: python2.7
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
-* ```pip install -r requirements.txt```
+* ```pip install -e .```
 
 Quickstart
 ----------
@@ -54,17 +53,17 @@ To run a game with a console front-end (Requires https://github.com/mrfuxi/strat
 General usage
 -------------
 
-* ```python strategypy/main.py <name_of_bot_one> <<name_of_bot_two> ...```
+* ```strategypy <name_of_bot_one> <<name_of_bot_two> ...```
 
 The result of the script is a JSON file that contains all the information necessary for any front-end to play it.
 
 The name of the bot must be a name of a python module in /bots/. It currently supports a URL of a web service that returns moves, but that is very experimental.
 
 This JSON result can be saved on a file so that it can be loaded later by a FE:
-* ```python strategypy/main.py killer prey prey > example.json```
+* ```strategypy killer prey prey > example.json```
 
 or it can be piped it directly into a FE, for example:
-* ```python strategypy/strategypy/main.py killer prey prey | python strategypy/simplefe.py```
+* ```strategypy killer prey prey | python strategypy/simplefe.py```
 
 See https://github.com/davide-ceretti/strategypy-pygame-client for a PyGame FE.
 See https://github.com/benqus/strategypy-ui for a Javascript FE.
@@ -74,8 +73,8 @@ Tests
 -----
 
 To run all the tests:
-* ```pip install -r test-requirements.txt```
-* ```./run_tests.sh```
+* ```pip install tox```
+* ```tox```
 
 
 BOT API
@@ -94,15 +93,15 @@ def action(ctx):
 ```
 
 Then you can play a game by running:
-```python strategypy/main.py mybot <<name_of_bot_two> ...```
+```strategypy mybot <<name_of_bot_two> ...```
 
 The second way (and experimental) to create a bot is by creating a web service that uses sockets. See https://github.com/davide-ceretti/strategypy-flask-bot-template as an example of a docker container running a flask service that uses sockets.
 
 The game can then be played by running:
-```python strategypy/main.py <url_of_my_service> <<name_of_bot_two> ...```
+```strategypy <url_of_my_service> <<name_of_bot_two> ...```
 
-For example:
-```python strategypy/main.py strategypy-bot-example-davide-ceretti.delta.tutum.io:49158 static```
+For example (not expect it to work):
+```strategypy strategypy-bot-example-davide-ceretti.delta.tutum.io:49158 static```
 
 The context given to the action function represents the state of the game when action is required for one of your units. It is a dictionary with the following keys:
 

@@ -1,1 +1,1 @@
-python strategypy/main.py davide happiness
+strategypy davide happiness

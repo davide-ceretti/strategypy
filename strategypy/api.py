@@ -77,7 +77,7 @@ def make_socket_bot(arg):
 
 
 def make_local_bot(arg):
-    __import__('bots.{}'.format(arg))
+    __import__('strategypy.bots.{}'.format(arg))
     bot_module = getattr(bots, arg)
 
     class LocalBot(BaseBot):
