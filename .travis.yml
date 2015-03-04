@@ -1,9 +1,6 @@
 language: python
 python:
   - "2.7"
-# command to install system dependecies
-before_install:
-  - sudo apt-get update -qq
 # command to install python dependencies
 install:
   - "pip install tox"
