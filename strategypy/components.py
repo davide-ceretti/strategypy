@@ -1,6 +1,6 @@
 import random
 
-import settings
+from strategypy import settings
 
 
 class Player(object):

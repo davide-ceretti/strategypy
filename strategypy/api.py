@@ -3,7 +3,7 @@ import json
 
 from websocket import create_connection
 
-import bots
+from strategypy import bots
 
 
 class BaseBot(object):

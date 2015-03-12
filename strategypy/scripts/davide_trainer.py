@@ -8,9 +8,9 @@ import argparse
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from game import Game
-from bots.davide import Bot as DavideBot
-import settings
+from strategypy.game import Game
+from strategypy.bots.davide import Bot as DavideBot
+from strategypy import settings
 
 settings.GRID_SIZE = (30, 30)
 settings.UNITS = 10

@@ -1,6 +1,6 @@
 import sys
 
-from game import Game
+from strategypy.game import Game
 
 
 def run():

@@ -2,9 +2,9 @@ from random import shuffle
 import json
 import glob
 
-import settings
-from components import Player
-from api import make_socket_bot, make_local_bot
+from strategypy import settings
+from strategypy.components import Player
+from strategypy.api import make_socket_bot, make_local_bot
 
 
 class Game(object):
