@@ -1,7 +1,4 @@
 import logging
-import json
-
-from websocket import create_connection
 
 from strategypy import bots
 
@@ -58,22 +55,6 @@ class BaseBot(object):
         verb, arg = action.split(' ')
 
         return arg
-
-
-def make_socket_bot(arg):
-    WS = create_connection("ws://{}".format(arg))
-
-    class SocketBot(BaseBot):
-        url = arg
-        name = arg
-        ws = WS
-
-        def action(self, ctx):
-            self.ws.send(json.dumps(ctx))
-            result = self.ws.recv()
-            return result
-
-    return SocketBot
 
 
 def make_local_bot(arg):
