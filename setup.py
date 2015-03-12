@@ -8,6 +8,9 @@ except ImportError:
     from distutils.core import setup
 
 
+from setuptools import find_packages
+
+
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
@@ -17,15 +20,13 @@ requirements = [
 
 setup(
     name='strategypy',
-    version='0.1.0',
+    version='0.2.0',
     description="A strategy game for Python bots with replaceable front ends",
     long_description=readme,
     author="Davide Ceretti",
     author_email='dav.ceretti@gmail.com',
     url='https://github.com/davide-ceretti/strategypy',
-    packages=[
-        'strategypy',
-    ],
+    packages=find_packages(),
     package_dir={'strategypy':
                  'strategypy'},
     include_package_data=True,
