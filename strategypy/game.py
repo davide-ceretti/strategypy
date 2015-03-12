@@ -1,10 +1,9 @@
 from random import shuffle
 import json
-import glob
 
 from strategypy import settings
 from strategypy.components import Player
-from strategypy.api import make_socket_bot, make_local_bot
+from strategypy.api import make_local_bot
 
 
 class Game(object):
@@ -41,20 +40,7 @@ class Game(object):
         Create bot action functions by getting the name of the
         package/module from the args
         """
-        external_bots = []
-        all_internal_bots = glob.glob('strategypy/bots/*.py')
-        all_internal_bots = [
-            x.split('/')[2][:-3]
-            for x in all_internal_bots
-        ]
-
-        internal_bots = [x for x in self.args if x in all_internal_bots]
-        external_bots = [x for x in self.args if x not in all_internal_bots]
-
-        internal_bots = map(make_local_bot, internal_bots)
-        external_bots = map(make_socket_bot, external_bots)
-
-        self.bots = internal_bots + external_bots
+        self.bots = map(make_local_bot, self.args)
 
     def snapshot_data(self):
         snapshot = self.current_data()

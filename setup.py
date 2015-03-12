@@ -20,7 +20,7 @@ requirements = [
 
 setup(
     name='strategypy',
-    version='0.2.0',
+    version='0.2.1',
     description="A strategy game for Python bots with replaceable front ends",
     long_description=readme,
     author="Davide Ceretti",
