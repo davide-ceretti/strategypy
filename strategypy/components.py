@@ -1,5 +1,7 @@
 import random
 
+import six
+
 from strategypy import settings
 
 
@@ -11,7 +13,10 @@ class Player(object):
         self.pk = pk
         self.game = game
         self.bot_class = bot_class
-        self.units = [Unit(self, i) for i in xrange(settings.UNITS)]
+        if six.PY2:
+            self.units = [Unit(self, i) for i in xrange(settings.UNITS)]
+        else:
+            self.units = [Unit(self, i) for i in range(settings.UNITS)]
         self.has_killed = {}
         self.was_killed_by = {}
 
@@ -133,7 +138,10 @@ class Unit(object):
 
     def get_random_location(self):
         X, Y = settings.GRID_SIZE
-        all_cells = {(x, y) for x in xrange(0, X) for y in xrange(0, Y)}
+        if six.PY2:
+            all_cells = {(x, y) for x in xrange(0, X) for y in xrange(0, Y)}
+        else:
+            all_cells = {(x, y) for x in range(0, X) for y in range(0, Y)}
         occupied_cells = self.player.game.occupied_cells
         open_cells = all_cells - set(occupied_cells.keys())
         return random.sample(open_cells, 1)[0]

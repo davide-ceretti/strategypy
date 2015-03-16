@@ -1,12 +1,14 @@
+import itertools
 import operator
 import random
-import itertools
+
+import six
 
 
 # Utilities
 
 def max_from_dict(dictionary):
-    items = dictionary.items()
+    items = list(dictionary.items())
     random.shuffle(items)
     result = max(
         items,
@@ -65,8 +67,9 @@ class Bot():
     def action(self, ctx):
         rules_actions = {
             rule: getattr(self, rule)(ctx)
-            for rule in self.rules.iterkeys()
+            for rule in six.iterkeys(self.rules)
         }
+
         weighted_actions = {
             action: self._eval_weighted_action(action, rules_actions)
             for action in self.actions
@@ -75,11 +78,17 @@ class Bot():
         return max_from_dict(weighted_actions)
 
     # UTILS
+    @staticmethod
+    def range_func(*args):
+        if six.PY2:
+            return xrange(*args)
+        else:
+            return range(*args)
 
     def _eval_weighted_action(self, action, rules_actions):
         value = sum(
             v * rules_actions[k][action]
-            for k, v in self.rules.iteritems()
+            for k, v in six.iteritems(self.rules)
         )
         return value
 
@@ -88,8 +97,8 @@ class Bot():
         x_final, y_final = final
         if initial not in self.danger_positions_cache:
             danger_positions = set(itertools.product(
-                xrange(x_initial, x_final + 1),
-                xrange(y_initial, y_final + 1),
+                self.range_func(x_initial, x_final + 1),
+                self.range_func(y_initial, y_final + 1),
             ))
             danger_positions.discard((x_initial, y_initial))  # Top left
             danger_positions.discard((x_final, y_initial))  # Top right
@@ -105,8 +114,8 @@ class Bot():
         x_final, y_final = final
         if initial not in self.close_positions_cache:
             close_positions = set(itertools.product(
-                xrange(x_initial + 1, x_final),
-                xrange(y_initial + 1, y_final),
+                self.range_func(x_initial + 1, x_final),
+                self.range_func(y_initial + 1, y_final),
             ))
             self.close_positions_cache[initial] = close_positions
         else:
@@ -116,11 +125,14 @@ class Bot():
     # RULES
 
     def be_able_to_move(self, ctx):
-        result = {k: 1.0 for k in self.actions.iterkeys()}
+        result = {k: 1.0 for k in six.iterkeys(self.actions)}
         x, y = ctx['position']
         X, Y = ctx['grid_size']
         board = ctx['current_data']
-        occupied_cells = [v.values() for k, v in board.iteritems()][0]
+        occupied_cells = list([
+            v.values()
+            for k, v in six.iteritems(board)
+        ][0])
         try:
             occupied_cells.remove((x, y))
         except ValueError:
@@ -155,7 +167,7 @@ class Bot():
         my_position = ctx['position']
         x, y = my_position
         allies = board[pk].values()
-        enemies = [v.values() for k, v in board.iteritems() if k != pk][0]
+        enemies = [v.values() for k, v in six.iteritems(board) if k != pk][0]
         close_allies = sum(
             1
             for ax, ay in allies
@@ -181,13 +193,13 @@ class Bot():
         if close_allies >= len(close_enemies):
             return result
         else:
-            return {k: 1.0 - v for k, v in result.iteritems()}
+            return {k: 1.0 - v for k, v in six.iteritems(result)}
 
     def find_isolated_targets(self, ctx):
         board = ctx['current_data']
         pk = ctx['player_pk']
         my_position = ctx['position']
-        enemies = [v.values() for k, v in board.iteritems() if k != pk][0]
+        enemies = [v.values() for k, v in six.iteritems(board) if k != pk][0]
         n = len(enemies)
         avg_enemies_x = sum(x for x, _ in enemies)/n
         avg_enemies_y = sum(y for _, y in enemies)/n
@@ -205,11 +217,13 @@ class Bot():
         board = ctx['current_data']
         pk = ctx['player_pk']
         x, y = ctx['position']
-        enemies = set([v.values() for k, v in board.iteritems() if k != pk][0])
+        enemies = set(
+            [v.values() for k, v in six.iteritems(board) if k != pk][0]
+        )
         allies = set(board[pk].values())
 
         result = {}
-        for k, v in self.actions.iteritems():
+        for k, v in six.iteritems(self.actions):
             x_offset, y_offset = v
 
             x_initial = x - 2 + x_offset
