@@ -27,7 +27,7 @@ Javascript Frontend: http://benqus.github.io/strategypy-ui/
 Installation
 ------------
 
-System dependencies: python2.7
+System dependencies: python2.7 or python3.4
 
 * ```git clone https://github.com/davide-ceretti/strategypy.git```
 * ```pip install -e .```
