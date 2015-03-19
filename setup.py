@@ -15,8 +15,7 @@ with open('README.md') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    'websocket-client',
-    'six',
+    'six>=1.9,<2',
 ]
 
 setup(
