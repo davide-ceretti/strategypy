@@ -2,7 +2,7 @@ import random
 import sys
 from copy import deepcopy
 
-from happines_base import Bot as HappinessBaseBot
+from .happines_base import Bot as HappinessBaseBot
 
 
 """

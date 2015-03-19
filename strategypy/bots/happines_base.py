@@ -60,7 +60,8 @@ class Bot():
 
         for direction in directions:
             happiness = self.calc_happiness(directions[direction]['friends'], directions[direction]['enemies'])
-            res.append((happiness, direction))
+            if direction is not None:
+                res.append((happiness, direction))
 
         max_hap = max(res)[0]
 

@@ -1,6 +1,8 @@
 from random import shuffle
 import json
 
+import six
+
 from strategypy import settings
 from strategypy.components import Player
 from strategypy.api import make_local_bot
@@ -113,10 +115,14 @@ class Game(object):
             player_units = current_data[player_pk].values()
 
             killers = []
+            if six.PY2:
+                range_func = xrange
+            else:
+                range_func = range
 
             allies, enemies = 0, 0
-            for xd in xrange(-1, 2):
-                for yd in xrange(-1, 2):
+            for xd in range_func(-1, 2):
+                for yd in range_func(-1, 2):
                     ox = x + xd
                     oy = y + yd
 

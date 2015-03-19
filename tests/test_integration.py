@@ -247,5 +247,5 @@ class TestSpawning(unittest.TestCase):
         )
         units = sorted(list(units))
 
-        expected = [[x, y] for x in xrange(3) for y in xrange(4)]
+        expected = [[x, y] for x in range(3) for y in range(4)]
         self.assertListEqual(units, expected)

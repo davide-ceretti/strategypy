@@ -16,6 +16,7 @@ with open('README.md') as readme_file:
 
 requirements = [
     'websocket-client',
+    'six',
 ]
 
 setup(
@@ -44,5 +45,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
     ],
 )
