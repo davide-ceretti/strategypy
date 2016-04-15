@@ -25,10 +25,10 @@ def get_me_closer_to(ctx, my_position, their_position):
     dx = my_x - their_x
     dy = my_y - their_y
 
-    move_up = 1 - (Y - dy)/Y if dy > 0 else 0.0
-    move_down = 1 - (Y + dy)/Y if dy < 0 else 0.0
-    move_left = 1 - (X - dx)/X if dx > 0 else 0.0
-    move_right = 1 - (X + dx)/X if dx < 0 else 0.0
+    move_up = 1 - (Y - dy) / Y if dy > 0 else 0.0
+    move_down = 1 - (Y + dy) / Y if dy < 0 else 0.0
+    move_left = 1 - (X - dx) / X if dx > 0 else 0.0
+    move_right = 1 - (X + dx) / X if dx < 0 else 0.0
 
     result = {
         'move up': move_up,
@@ -52,16 +52,12 @@ class Bot():
         None: (0, 0),
     }
 
-    # Optimized for 1v1 vs Happines
-    # On (30, 30) grid with 10 units
-    # Using genetic_algorythms_training
-    # (0.93, 0.57, 0.51, 0.08)
     rules = {
         'be_able_to_move': 100.0,
-        'risk_of_dieing': 0.93,
-        'outnumber_isolated_enemies': 0.57,
-        'closer_to_central_mass': 0.51,
-        'find_isolated_targets': 0.08,
+        'risk_of_dieing': 0.44,
+        'outnumber_isolated_enemies': 0.19,
+        'closer_to_central_mass': 0.28,
+        'find_isolated_targets': 0.09,
     }
 
     def action(self, ctx):
@@ -137,13 +133,13 @@ class Bot():
             occupied_cells.remove((x, y))
         except ValueError:
             pass
-        if x == 0 or (x-1, y) in occupied_cells:
+        if x == 0 or (x - 1, y) in occupied_cells:
             result['move left'] = 0.0
-        if x == X - 1 or (x+1, y) in occupied_cells:
+        if x == X - 1 or (x + 1, y) in occupied_cells:
             result['move right'] = 0.0
-        if y == 0 or (x, y-1) in occupied_cells:
+        if y == 0 or (x, y - 1) in occupied_cells:
             result['move up'] = 0.0
-        if y == Y - 1 or (x, y+1) in occupied_cells:
+        if y == Y - 1 or (x, y + 1) in occupied_cells:
             result['move down'] = 0.0
         return result
 
@@ -154,8 +150,8 @@ class Bot():
         allies = board[pk].values()
         n = len(allies)
         avg_position = (
-            sum(x for x, _ in allies)/n,
-            sum(y for _, y in allies)/n
+            sum(x for x, _ in allies) / n,
+            sum(y for _, y in allies) / n
         )
 
         result = get_me_closer_to(ctx, my_position, avg_position)
@@ -171,12 +167,12 @@ class Bot():
         close_allies = sum(
             1
             for ax, ay in allies
-            if abs(x-ax) <= 3 and abs(y-ay) <= 3
+            if abs(x - ax) <= 3 and abs(y - ay) <= 3
         )
         close_enemies = [
             (ex, ey)
             for ex, ey in enemies
-            if abs(x-ex) <= 6 and abs(y-ey) <= 6
+            if abs(x - ex) <= 6 and abs(y - ey) <= 6
         ]
 
         n = len(close_enemies)
@@ -184,8 +180,8 @@ class Bot():
             return {k: 1.0 for k in self.actions.keys()}
 
         avg_position = (
-            sum(x for x, _ in close_enemies)/n,
-            sum(y for _, y in close_enemies)/n
+            sum(x for x, _ in close_enemies) / n,
+            sum(y for _, y in close_enemies) / n
         )
 
         result = get_me_closer_to(ctx, my_position, avg_position)
@@ -201,8 +197,8 @@ class Bot():
         my_position = ctx['position']
         enemies = [v.values() for k, v in six.iteritems(board) if k != pk][0]
         n = len(enemies)
-        avg_enemies_x = sum(x for x, _ in enemies)/n
-        avg_enemies_y = sum(y for _, y in enemies)/n
+        avg_enemies_x = sum(x for x, _ in enemies) / n
+        avg_enemies_y = sum(y for _, y in enemies) / n
         distances_from_avg = {
             (ex, ey): abs(ex - avg_enemies_x) + abs(ey - avg_enemies_y)
             for ex, ey in enemies
@@ -243,7 +239,7 @@ class Bot():
             if diff > 0:
                 result[k] = 1.0
             else:
-                result[k] = 1.0 + (diff/len(danger_positions))
+                result[k] = 1.0 + (diff / len(danger_positions))
         return result
 
 bot = Bot()
